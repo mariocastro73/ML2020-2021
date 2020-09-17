@@ -22,7 +22,6 @@ with(Titanic3,
          table(Survived,Sex);
      } 
 )
-# SNIPPET
 
 # Custom function
 c(mean(Titanic3$Age),sd(Titanic3$Age))
