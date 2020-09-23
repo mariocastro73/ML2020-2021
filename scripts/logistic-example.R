@@ -36,6 +36,7 @@ summary(admision)
 # Let's split the data
 p <- 0.8 # Training: 80% of the dataset; Validation: 20%
 train <- sample.int(nrow(admision),p*nrow(admision))
+# train <- createDataPartition(admision$admit,p=0.8,list=FALSE) # Using caret
 train.data <- admision[train,]
 val.data <- admision[-train,]
 
@@ -44,6 +45,7 @@ val.data <- admision[-train,]
 # There is no need to convert admit to factor.
 fit <- glm(admit ~ gre + gpa + rank, data = train.data, family = "binomial") # Fit
 #fit <- glm(admit ~ ., data = admision, family = "binomial") # Simpler syntax
+# fit <- train(as.factor(admit) ~ ., data = train.data, method='glm',family = "binomial")  # same with Caret
 summary(fit) # Print the results
 ## odds ratios only
 exp(coef(fit))
