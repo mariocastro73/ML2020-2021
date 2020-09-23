@@ -56,6 +56,6 @@ table(admision.tst$admit,pred.logistic) # More accurate than knn
 table(admision.tst$admit,pred.knn)
 # Comparing preditions
 library(mlbench)
-results <- resamples(list(LR=fit.logistic, KNN=fit.knn))
-dotplot(results)
+results <- resamples(list(LR=fit.logistic, KNN=fit.knn)) # resamples is a caret function
+dotplot(results) # dotplot is an mlbech function
 
