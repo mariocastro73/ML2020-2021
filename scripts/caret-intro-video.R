@@ -13,6 +13,16 @@ Titanic.imputed <- predict(pre,Titanic)
 Titanic$Age[10:15]
 Titanic.imputed$Age[10:15]*age.sd+age.mean
 
+# preprocessing
+data(iris)
+summary(iris)
+# calculate the pre-process parameters from the dataset
+preprocessParams <- preProcess(iris[,1:4], method=c("range"))
+# transform the dataset using the pre-processing parameters
+transformed <- cbind(predict(preprocessParams, iris[,1:4]),Species=iris$Species)
+# summarize the transformed dataset
+summary(transformed)
+
 # dummyVars
 data <- data.frame(vars=as.factor(c("Brown","Blonde","Black","Red","Grey")))
 dv <- dummyVars(~vars,data=data,fullRank = T)
@@ -27,6 +37,7 @@ filteredDescr <- mdrrDescr[, !nzv$nzv]
 dim(x=filteredDescr) # We have removed 45 features
 
 #  data partitioning
+# install.packages('ISLR')
 data(Default, package = "ISLR")
 dim(Default)
 default_idx = createDataPartition(Default$default, p = 0.75, list = FALSE)
@@ -43,3 +54,8 @@ pred.logistic <- predict(fit.logistic,admision.tst) # Different from predict for
 pred.knn  <- predict(fit.knn,admision.tst) # Different from predict after a knn(...) 
 table(admision.tst$admit,pred.logistic) # More accurate than knn
 table(admision.tst$admit,pred.knn)
+# Comparing preditions
+library(mlbench)
+results <- resamples(list(LR=fit.logistic, KNN=fit.knn))
+dotplot(results)
+
