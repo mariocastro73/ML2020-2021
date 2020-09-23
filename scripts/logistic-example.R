@@ -3,15 +3,17 @@ admision <- read.csv("https://raw.githubusercontent.com/mariocastro73/ML2020-202
 str(admision)
 summary(admision)  # The range of grep and gpa (the two numerical features) is so
 # different, so I'll normalize the data later
+admision$admit  <- as.factor(admision$admit)
 admision$rank <- as.factor(admision$rank)
 # GPA (Grade Point Average)
 # GRE (Graduate Record Examination)
 # Rank: 4: Top universities
 set.seed(9876)
+
 library(MLTools)
 PlotDataframe(admision, output.name = "admit") # Included in MLTools
 library(caret)
-featurePlot(x=admision[,-1],y=as.factor(admision$admit),plot='pairs')
+featurePlot(x=admision[,-1],y=admision$admit,plot='pairs')
 library(psych)
 pairs.panels(admision) # Have glimpse of the dataset (gpa is a bit skewed, so we could correct it)
 # It seems that gre and gpa are slightly correlated. That is expected but might create
@@ -44,8 +46,8 @@ val.data <- admision[-train,]
 # Formula: admit ~ gre + gpa + rank
 # There is no need to convert admit to factor.
 fit <- glm(admit ~ gre + gpa + rank, data = train.data, family = "binomial") # Fit
-#fit <- glm(admit ~ ., data = admision, family = "binomial") # Simpler syntax
-# fit <- train(as.factor(admit) ~ ., data = train.data, method='glm',family = "binomial")  # same with Caret
+#fit <- glm(admit ~ ., data = train.data, family = "binomial") # Simpler syntax
+# fit <- train(admit ~ ., data = train.data, method='glm',family = "binomial")  # same with Caret
 summary(fit) # Print the results
 ## odds ratios only
 exp(coef(fit))
