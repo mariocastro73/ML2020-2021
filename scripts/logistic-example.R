@@ -7,10 +7,13 @@ admision$rank <- as.factor(admision$rank)
 # GPA (Grade Point Average)
 # GRE (Graduate Record Examination)
 # Rank: 4: Top universities
-
+set.seed(9876)
+library(MLTools)
+PlotDataframe(admision, output.name = "admit") # Included in MLTools
+library(caret)
+featurePlot(x=admision[,-1],y=as.factor(admision$admit),plot='pairs')
 library(psych)
 pairs.panels(admision) # Have glimpse of the dataset (gpa is a bit skewed, so we could correct it)
-#PlotDataframe(admision, output.name = "admit") # Included in MLTools
 # It seems that gre and gpa are slightly correlated. That is expected but might create
 # some misinterpration of the data. Let's move on
 
@@ -44,23 +47,19 @@ fit <- glm(admit ~ gre + gpa + rank, data = train.data, family = "binomial") # F
 summary(fit) # Print the results
 ## odds ratios only
 exp(coef(fit))
-
-# The intercept means that, for grep=gpa=0, the odds of being admitted in a Rank 1 
-# university is 54:1 against
-# Every point in the (scaled) gre increases your odds by a 600% percent. 
-# That sounds a lot, but it means that it increases only
-exp(1.5061/8)
-# 1.21 => 21% increase for every 100 points (remember that the original scale was 0..800)
-# For gpa
-exp(3.6647/4)
-# In this case, it means a 150% increase for every gpa point. this is a lot...
-
 1/exp(coef(fit)) # To help to interpret the values lower than 1
+# Output:
+# (Intercept)         gre         gpa       rank2       rank3       rank4 
+# 13.5582757   0.2002003   0.1750830   1.8575220   3.7833259   4.6925674
+# The intercept means that, for grep=gpa=0, the odds of being admitted in a Rank 1 
+# university is 14:1 against
+# Going from 0 to 1 (maximum) in the gre increases your odds by a 4.99 (= 400%). 
+# For gpa, 5.71 (471%)
 
 # Note how the odds ratio decreases dramatically for every "step" in the rank
 # For the same values of gre and gpa, applying to a rank 2 vs a rank 1 university 
-# reduces your odds by a factor of 1.6. Also, and this is more striking, applying for
-# a rank 4 university reduces your odds by 4.4 (340%!!!) with respect to a rank 3.
+# reduces your odds by a factor of 1.86. Also, and this is more striking, applying for
+# a rank 4 university reduces your odds by 4.7 (370%!!!) with respect to a rank 3.
 
 # Let's see how it predicts
 pred <- predict(fit,val.data,type='response') # type='response' gives probabilities
@@ -71,8 +70,9 @@ pairs.panels(val.data) # Looks nice. See how the prediction correlates with the 
 pred.class <- ifelse(pred>0.5,1,0) # Threshold at 0.5
 cm <- table(col=val.data$admit,pred.class) # Confusion matrix (true vs predicted)
 print(cm)
-sum(diag(cm))/sum(colSums(cm)) # accuracy (true's/all)=> 69%
-my.statistics(val.data$admit,pred.class) # Borrowed from knn-example.R (see https://github.com/mariocastro73/ML2020-2021/blob/master/scripts/knn-example.R)
-# Sensitivity sucks but specificity is 98% so False positives are extremely low but
-# you can't predict if all those negatives deserve it or not.
+sum(diag(cm))/sum(colSums(cm)) # accuracy (true's/all)=> 75%
+# Try also: my.statistics(val.data$admit,pred.class) # Borrowed from knn-example.R (see https://github.com/mariocastro73/ML2020-2021/blob/master/scripts/knn-example.R)
+confusionMatrix(cm)
 
+# Pos Pred Value : 0.9643          
+# Neg Pred Value : 0.2500  # Too many false negatives...
