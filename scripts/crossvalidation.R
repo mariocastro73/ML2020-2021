@@ -83,3 +83,8 @@ fit.tree <- train(Y ~ ., data = data.trn, method = "rpart",
 print(fit.tree)
 plot(fit.tree)
 rpart.plot(fit.tree$finalModel)
+Plot2DClass(data.trn[,1:2], #Input variables of the model
+            data.trn$Y,     #Output variable
+            fit.tree,#Fitted model with caret
+            var1 = "X1", var2 = "X2",
+            selClass = "YES")
