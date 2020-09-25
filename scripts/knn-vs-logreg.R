@@ -10,14 +10,17 @@ data.tst <- data[-train.idx,]
 str(data.trn)
 str(data.tst)
 
-# fit.knn <- train(Y~.,data.trn,method='knn') # Default k=5
-fit.knn <- train(Y~.,data.trn,method='knn',tuneGrid=data.frame(k=28)) # sqrt(nrow(data.trn))=28.3
+fit.knn <- train(Y~.,data.trn,method='knn') # Default k=5
+
+fit.knn <- train(Y~.,data.trn,method='knn',
+                 tuneGrid=data.frame(k=100)) # sqrt(nrow(data.trn))=28.3
 
 Plot2DClass(data.trn[,1:2], #Input variables of the model
             data.trn$Y,     #Output variable
             fit.knn,#Fitted model with caret
             var1 = "X1", var2 = "X2",
             selClass = "YES")
+
 pred.knn <- predict(fit.knn,data.tst)
 cm.knn <- table(data.tst$Y,pred.knn)
 confusionMatrix(cm.knn)
@@ -25,12 +28,14 @@ summary(fit.knn)
 
 # Time for logistic regression
 fit.lr <- train(Y~.,data.trn,method='glm',family=binomial())
+
 summary(fit.lr)
 exp(coef(fit.lr$finalModel))
 1/exp(coef(fit.lr$finalModel))
 pred.lr <- predict(fit.lr,data.tst)
 cm.lr <- table(data.tst$Y,pred.lr)
 confusionMatrix(cm.lr)
+
 Plot2DClass(data.trn[,1:2], #Input variables of the model
             data.trn$Y,     #Output variable
             fit.lr,#Fitted model with caret
