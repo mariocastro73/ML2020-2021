@@ -1,0 +1,18 @@
+snippet caret
+	train <- createDataPartition(${1:data}[,"${2:Y}"],p=${3:0.8},list=FALSE)
+	$1.trn <- $1[train,]
+	$1.tst <- $1[-train,]
+
+	ctrl  <- trainControl(method  = "cv",number  = 10)#,classProbs = TRUE)
+	
+	fit.cv <- train($2 ~ ., data = $1.trn, method = "${4:knn}",
+		trControl = ctrl, 
+		preProcess = c("center","scale"), 
+		tuneGrid =data.frame(${5:k}=${6:10}))
+		# tuneLength = 50)
+	
+	pred <- predict(fit.cv,$1.tst)
+	confusionMatrix(table($1.tst[,"$2"],pred))
+	print(fit.cv)
+	plot(fit.cv)
+
