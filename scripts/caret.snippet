@@ -3,7 +3,7 @@ snippet caret
 	$1.trn <- $1[train,]
 	$1.tst <- $1[-train,]
 
-	ctrl  <- trainControl(method  = "cv",number  = 10)#,classProbs = TRUE)
+	ctrl  <- trainControl(method  = "cv",number  = 10) #, summaryFunction = multiClassSummary
 	
 	fit.cv <- train($2 ~ ., data = $1.trn, method = "${4:knn}",
 		trControl = ctrl, 

@@ -4,44 +4,38 @@ library(caret)
 # Let's play a little bit with knn
 data <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/data-for-knn.csv')
 set.seed(1234)
-train.idx <- createDataPartition(data$Y,p=0.8,list=FALSE)
-data.trn <- data[train.idx,]
-data.tst <- data[-train.idx,]
-str(data.trn)
-str(data.tst)
 
-fit.knn <- train(Y ~ ., data = data.trn, 
-                 method = "knn", 
-                 preProcess = c("center","scale"),
-                 tuneGrid = data.frame(k=5))
-fit.knn
+# Use the caret snippet 
+train <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
+data.trn <- data[train,]
+data.tst <- data[-train,]
+
+ctrl  <- trainControl(method  = "cv",number  = 10)#,classProbs = TRUE)
+
+fit.cv <- train(Y ~ ., data = data.trn, method = "knn",
+  trControl = ctrl, 
+  preProcess = c("center","scale"), 
+  # tuneGrid =data.frame(k=c(5,10,25,100)))
+  tuneLength = 25)
+
+pred <- predict(fit.cv,data.tst)
+confusionMatrix(table(data.tst[,"Y"],pred))
+print(fit.cv)
+plot(fit.cv)
+
+library(lattice)
+data.tst$probs <- predict(fit.cv,data.tst,type = 'prob')$YES
+histogram(~probs|Y,data.tst)
+
+
+
+
 Plot2DClass(data.trn[,1:2], #Input variables of the model
             data.trn$Y,     #Output variable
             fit.knn,#Fitted model with caret
             var1 = "X1", var2 = "X2",
             selClass = "YES")
 
-pred.knn <- predict(fit.knn,data.tst)
-cm.knn <- table(data.tst$Y,pred.knn)
-confusionMatrix(cm.knn)
-# Choosing manually the values of the knn parameter "k"
-ctrl  <- trainControl(method  = "cv",number  = 10)
-fit.knn.cv <- train(Y ~ ., data = data.trn, method = "knn",
-                    trControl = ctrl, 
-                    preProcess = c("center","scale"), 
-                    tuneGrid =data.frame(k=seq(1,100,by=4)))
-                    # tuneLength = 50)
-print(fit.knn.cv)
-plot(fit.knn.cv)
-
-# Using tuneLength
-ctrl  <- trainControl(method  = "cv",number  = 10)
-fit.knn.cv <- train(Y ~ ., data = data.trn, method = "knn",
-                    trControl = ctrl, 
-                    preProcess = c("center","scale"), 
-                    tuneLength = 30) # Try 30 (odd) values
-print(fit.knn.cv)
-plot(fit.knn.cv)
 
 # Including additional metrics for CV  (beyond Accuracy)
 ctrl  <- trainControl(method  = "cv",number  = 10, summaryFunction = multiClassSummary)
