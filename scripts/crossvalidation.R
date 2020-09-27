@@ -27,9 +27,6 @@ library(lattice)
 data.tst$probs <- predict(fit.cv,data.tst,type = 'prob')$YES 
 histogram(~probs|Y,data.tst)# See how certain the prediction was
 
-
-
-
 Plot2DClass(data.trn[,1:2], #Input variables of the model
             data.trn$Y,     #Output variable
             fit.knn,#Fitted model with caret
@@ -59,7 +56,13 @@ fit.tree <- train(Y ~ ., data = data.trn, method = "rpart",
                 tuneLength=20)
 print(fit.tree)
 plot(fit.tree)
+pred <- predict(fit.tree,data.tst) # predict the output classes
+confusionMatrix(table(data.tst[,"Y"],pred)) 
+plot(fit.tree$finalModel)
+text(fit.tree$finalModel)
+
 rpart.plot(fit.tree$finalModel)
+
 Plot2DClass(data.trn[,1:2], #Input variables of the model
             data.trn$Y,     #Output variable
             fit.tree,#Fitted model with caret
