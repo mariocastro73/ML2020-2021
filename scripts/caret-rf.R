@@ -1,9 +1,9 @@
 library(caret)
 library(rpart.plot)
 data <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/carseats.csv')
+str(data)
 ################################################################################
-# A  data set containing sales of child car seats at 400 different stores.
-# Sales: Unit sales (in thousands) at each location
+# A  data set containing sales of child car safety seats at 400 different stores.
 # CompPrice: Price charged by competitor at each location
 # Income: Community income level (in thousands of dollars)
 # Advertising: Local advertising budget for company at each location (in thousands of dollars)
@@ -14,8 +14,9 @@ data <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/ma
 # Education: Education level at each location
 # Urban: A factor with levels No and Yes to indicate whether the store is in an urban or rural location
 # US: A factor with levels No and Yes to indicate whether the store is in the US or not
+# High: Sales above 9 thousand dollars?
+################################################################################
 
-str(data)
 summary(data)
 set.seed(666)
 train <- createDataPartition(data[,"High"],p=0.8,list=FALSE)
@@ -32,12 +33,12 @@ fit.cv <- train(High ~ ., data = data.trn, method = "rf",
 
 print(fit.cv)
 plot(fit.cv)
-
+fit.cv$results
 pred <- predict(fit.cv,data.tst)
 confusionMatrix(table(data.tst[,"High"],pred))
 
 
-print(varImp(fit.cv))
+print(varImp(fit.cv)) # Variable importance
 plot(varImp(fit.cv))
 
 
