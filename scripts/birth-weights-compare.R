@@ -57,3 +57,4 @@ plot(varImp(fit.glm))
 evalm(fit.glm)
 exp(coef(fit.glm$finalModel))
 dotplot(resamples(list(knn=fit.knn,tree=fit.tree,rf=fit.rf,logreg=fit.glm)))
+  
