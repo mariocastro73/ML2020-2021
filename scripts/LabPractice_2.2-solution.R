@@ -72,7 +72,7 @@ pred.glm.probs <- predict(fit.glm,heart.tst,type='prob')
 # You can use a loop but I'll use the advanced sapply method
 thres <- seq(0.1,0.9,by=0.1)
 myfunc <- function(thres) {
-  predicted <- as.factor(ifelse(pred.glm.probs$risk>thres,"healthy","risk")) 
+  predicted <- as.factor(ifelse(pred.glm.probs$risk>thres,"risk","healthy")) 
   return(length(which(predicted == heart.tst$target))/nrow(heart.tst)*100) # Sum the elements in the diagonal
 }
 accuracy <- sapply(thres,myfunc)
