@@ -1,4 +1,4 @@
-## Comparing SVM methods using caret and ROC curves
+## Comparing different methods using caret and ROC curves
 library(MLeval)
 library(caret)
 ## load data and run Caret
