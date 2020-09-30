@@ -3,7 +3,7 @@ library(MLeval)
 library(ggplot2)
 library(gridExtra)
 
-data <- read.csv('datasets/data-for-knn.csv')
+data <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/data-for-knn.csv')
 
 train <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
 data.trn <- data[train,]
