@@ -72,6 +72,7 @@ grid$Yglm2 <- predict(fit.glm2,grid)
 g <- ggplot(grid,aes(x=X1,y=X2))  + scale_colour_brewer()
 g + geom_point(aes(col=Y5))
 p1 <- g + geom_point(aes(col=Y45))
+print(p1)
 g + geom_point(aes(col=Y200))
 g + geom_point(aes(col=Ytree))
 g + geom_point(aes(col=Yrf100))
@@ -79,7 +80,7 @@ g + geom_point(aes(col=Yrf500))
 g + geom_point(aes(col=Yrf1000))
 g + geom_point(aes(col=Yglm))
 p2 <- g + geom_point(aes(col=Yglm2))
-
+print(p2)
 
 
 models <- list(knn5=fit.5,knn45=fit.45,knn200=fit.200,
@@ -88,3 +89,4 @@ models <- list(knn5=fit.5,knn45=fit.45,knn200=fit.200,
                logreg=fit.glm,logreg2=fit.glm2)
 dotplot(resamples(models))
 grid.arrange(p1,p2)
+evalm(models,gnames=c("knn4","knn45","knn200","tree","rf100","rf500","rf1000","logreg","logreg2"))
