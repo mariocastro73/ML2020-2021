@@ -91,7 +91,7 @@ train <- createDataPartition(dose[,"Survived"],p=0.8,list=FALSE)
 dose.trn <- dose[train,]
 dose.tst <- dose[-train,]
 
-ctrl  <- trainControl(method  = "cv",number  = 10, summaryFunction=multiClassSummary, 
+ctrl  <- trainControl(method  = "cv",number  = 10, summaryFunction=twoClassSummary, 
                       classProbs=T,# Required for the ROC curves
                       savePredictions = T) # Required for the ROC curves
 
@@ -100,15 +100,29 @@ fit.nnet2 <- train(Survived ~ Dose, data = dose.trn, method = "nnet",
   # tuneGrid =data.frame(k=10))
   tuneLength = 5)
 plot(fit.nnet2)
-evalm(fit.nnet2,plots="r")
+evalm(fit.nnet2)
 pred.nnet2<- predict(fit.nnet2,dose)
 table(dose$Survived,pred.nnet2)
 
-fit.nnet2 <- train(Survived ~ Dose, data = dose.trn, method = "nnet",
+fit.50 <- train(Survived ~ Dose, data = dose.trn, method = "nnet",
   trControl = ctrl, 
-  tuneGrid =data.frame(size=3,decay=c(0,0.0001,0.001,0.01,0.1)))
-  # tuneLength = 5)
-plot(fit.nnet2)
-evalm(fit.nnet2,plots="r")
-pred.nnet2<- predict(fit.nnet2,dose)
-table(dose$Survived,pred.nnet2)
+  tuneGrid =data.frame(size=3,decay=0.003),
+  maxit=50)
+fit.100 <- train(Survived ~ Dose, data = dose.trn, method = "nnet",
+  trControl = ctrl, 
+  tuneGrid =data.frame(size=3,decay=0.003),
+  maxit=100)
+fit.1000 <- train(Survived ~ Dose, data = dose.trn, method = "nnet",
+  trControl = ctrl, 
+  tuneGrid =data.frame(size=3,decay=0.003),
+  maxit=1000)
+
+models <- list(n50=fit.50,n100=fit.100,n1000=fit.1000)
+dotplot(resamples(models))
+
+
+fit.penalty <- train(Survived ~ Dose, data = dose.trn, method = "nnet",
+                  trControl = ctrl, 
+                  tuneGrid =data.frame(size=20,decay=10))
+pred.penalty<- predict(fit.penalty,dose)
+table(dose$Survived,pred.penalty)
