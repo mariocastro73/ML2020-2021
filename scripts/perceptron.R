@@ -94,8 +94,6 @@ fit.nnet3 <- train(Survived ~ Dose, data = dose, method='nnet',
 lines(x,predict(fit.nnet3,data.frame(Dose=x),type = 'prob')$Yes,col='orange',lwd=3)
 summary(fit.nnet3)
 
-
-
 ######################################################################################
 
 library(MLeval)
