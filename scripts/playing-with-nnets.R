@@ -6,7 +6,7 @@
 library(caret)
 library(ggplot2)
 library(NeuralNetTools) ##Useful tools for plotting and analyzing neural networks
-library(nnet)
+library(NeuralSens)
 
 ## Read an example dataset
 data <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/data-for-knn.csv')
@@ -61,6 +61,10 @@ ggplot(grid_X1_X2) +
   geom_point(data = data[data$Y == "YES",], aes(x = X1, y = X2), color = "black", size = 1) +
   geom_point(data = data[data$Y == "NO",], aes(x = X1, y = X2), color = "white", size = 1) 
 
+SensAnalysisMLP(fit.mlp)
+varImp(fit.mlp)
+plot(varImp(fit.mlp))
+
 # Try decay = 0 and 2 neurons: are 2 neurons enough?
 set.seed(150) #For replication
 fit.mlp <- train(Y ~ ., data = data.trn, 
@@ -83,12 +87,13 @@ confusionMatrix(data = mlp_pred, reference = data.trn$Y, positive = "YES")
 # A trick to extract only the Accuracy
 confusionMatrix(data = mlp_pred, reference = data.trn$Y, positive = "YES")$overall[1] 
 mlp_pred <-  predict(fit.mlp, newdata = data.tst) # Accuracy of testing
-confusionMatrix(data = mlp_pred, reference = data.tst$Y, positive = "YES")
 confusionMatrix(data = mlp_pred, reference = data.tst$Y, positive = "YES")$overall[1]
+
 
 # Variable importance
 plotnet(fit.mlp$finalModel) #Plot the network
 varImp(fit.mlp)
+SensAnalysisMLP(fit.mlp)
 
 # Try decay = 0 and 10 neurons: a reasonable number of neurons 
 set.seed(150) #For replication
@@ -99,7 +104,7 @@ fit.mlp <- train(Y ~ ., data = data.trn,
                  maxit = 250,    # Maximum number of iterations
                  tuneGrid = data.frame(size = 10, decay = 0),
                  metric = "Accuracy")
-
+SensAnalysisMLP(fit.mlp)
 
 ## Plot a 2D graph with the results of the model -------------------------------------------------
 grid_X1_X2$pred <- predict(fit.mlp, type = "raw", newdata = grid_X1_X2) # predicted probabilities for class YES
@@ -123,6 +128,13 @@ fit.mlp <- train(Y ~ ., data = data.trn,
                  preProcess = c("center","scale"), 
                  maxit = 250,    # Maximum number of iterations
                  tuneGrid = data.frame(size = 10, decay = 3),
+                 metric = "Accuracy")
+fit.mlp <- train(Y ~ ., data = data.trn, 
+                 method = "nnet",
+                 trControl = ctrl, 
+                 preProcess = c("center","scale"), 
+                 maxit = 250,    # Maximum number of iterations
+                 tuneGrid = data.frame(size = 10, decay = .1),
                  metric = "Accuracy")
 
 ## Plot a 2D graph with the results of the model -------------------------------------------------
@@ -159,7 +171,8 @@ mlp_pred <-  predict(fit.mlp, data.trn)
 confusionMatrix(data = mlp_pred, reference = data.trn$Y, positive = "YES")$overall[1] 
 mlp_pred <-  predict(fit.mlp,data.tst)
 confusionMatrix(data = mlp_pred, reference = data.tst$Y, positive = "YES")$overall[1] 
-
+varImp(fit.mlp)
+SensAnalysisMLP(fit.mlp)
 
 # Try decay = 0.1 and 50 neurons: the excess of complexity is corrected by weight decay
 set.seed(150) #For replication
@@ -234,7 +247,7 @@ Gfit.mlp = train(Y ~ ., data = data.trn,
                  method = "nnet",
                  preProcess = c("center","scale"),
                  maxit = 250,    # Maximum number of iterations
-                 tuneGrid = expand.grid(size = seq(5,25,length.out = 5), decay=10^seq(-9,0,by=1)),
+                 tuneGrid = expand.grid(size = seq(2,25,length.out = 5), decay=10^seq(-9,0,by=1)),
                  trControl = ctrl, 
                  metric = "Accuracy")
 
