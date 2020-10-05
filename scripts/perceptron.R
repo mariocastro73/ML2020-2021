@@ -5,6 +5,9 @@ library(nnet)
 
 set.seed(9191)
 dose <- read.csv("https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/dose0.csv")
+str(dose)
+summary(dose)
+
 with(dose,plot(Dose,Survived,col=Survived))
 
 fit.glm <- train(Survived ~ Dose, data = dose, method='glm',
@@ -21,7 +24,6 @@ activation.function <- function(x,bias,weight) {
   return(1/(1+exp(-(bias+weight*x))))
 }
 
-
 pred.glm <- predict(fit.glm,dose)
 table(dose$Survived,pred.glm)
 # confusionMatrix(table(dose$Survived,pred.glm))
@@ -32,19 +34,19 @@ table(dose$Survived,pred.nnet)
 # x11() # If you 
 with(dose,{
   y <- as.numeric(Survived)-1
-  plot(Dose,y,col=Survived,pch=19,cex=2,cex.lab=2,cex.axis=1.5,ylab="")
+  plot(Dose,y,col=Survived,pch=19,cex=1.5,cex.lab=2,cex.axis=1.5,ylab="")
   })
 x <- seq(0.,0.7,by=0.1)
-points(x,activation.function(x,-12.7,45.56),pch=19,col=4,cex=4)
+points(x,activation.function(x,-12.7,45.56),pch=19,col=4,cex=2.5)
 x <- seq(0,.7,length=100)
-lines(x,activation.function(x,-12.7,45.56),col='orange',lwd=4)
+lines(x,activation.function(x,-12.7,45.56),col='orange',lwd=3)
 
 ##################### New dataset ###############################################
 
 dose <- read.csv("https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/dose.csv")
 with(dose,{
   y <- as.numeric(Survived)-1
-  plot(Dose,y,col=Survived,pch=19,cex=2,cex.lab=2,cex.axis=1.5,ylab="")
+  plot(Dose,y,col=Survived,pch=19,cex=1.2,cex.lab=2,cex.axis=1.5,ylab="")
 })
 
 fit.glm <- train(Survived ~ Dose, data = dose, method='glm',
@@ -67,7 +69,7 @@ table(dose$Survived,pred.nnet2)
 
 
 x <- seq(0,1,length=100)
-with(dose,plot(Dose,as.numeric(Survived)-1,col=Survived,cex=2,pch=19))
+with(dose,plot(Dose,as.numeric(Survived)-1,col=Survived,cex=1.2,pch=19))
 lines(x,predict(fit.glm,data.frame(Dose=x),type = 'prob')$Yes)
 lines(x,predict(fit.nnet,data.frame(Dose=x),type = 'prob')$Yes,col=3)
 lines(x,predict(fit.nnet2,data.frame(Dose=x),type = 'prob')$Yes,col='orange',lwd=3)
@@ -77,6 +79,22 @@ with(dose,plot(Dose,as.numeric(Survived)-1,col=Survived,cex=1.5,pch=19,cex.lab=2
 lines(x,y <- activation.function(x,6.22,-6.41),col='blue',lwd=4)
 lines(x,z <- activation.function(x,-6.09  ,29.63 ),col='darkgreen',lwd=4)
 lines(x,1/(1+exp(-(-38.13 +y* 19.48 +z* 22.43))),col=2,lwd=3)
+
+fit.nnet5 <- train(Survived ~ Dose, data = dose, method='nnet',
+                   tuneGrid = data.frame(size=5,decay=0))
+lines(x,predict(fit.nnet5,data.frame(Dose=x),type = 'prob')$Yes,col='orange',lwd=3)
+
+with(dose,plot(Dose,as.numeric(Survived)-1,col=Survived,cex=1.5,pch=19,cex.lab=2,cex.axis=1.5,ylab=""))
+lines(x,y <- activation.function(x,6.22,-6.41),col='blue',lwd=4)
+lines(x,z <- activation.function(x,-6.09  ,29.63 ),col='darkgreen',lwd=4)
+lines(x,1/(1+exp(-(-38.13 +y* 19.48 +z* 22.43))),col=2,lwd=3)
+
+fit.nnet3 <- train(Survived ~ Dose, data = dose, method='nnet',
+                   tuneGrid = data.frame(size=3,decay=0))
+lines(x,predict(fit.nnet3,data.frame(Dose=x),type = 'prob')$Yes,col='orange',lwd=3)
+summary(fit.nnet3)
+
+
 
 ######################################################################################
 
