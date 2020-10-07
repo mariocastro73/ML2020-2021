@@ -1,7 +1,7 @@
 snippet caret
-	train <- createDataPartition(${1:data}[,"${2:Y}"],p=${3:0.8},list=FALSE)
-	$1.trn <- $1[train,]
-	$1.tst <- $1[-train,]
+	train.index <- createDataPartition(${1:data}[,"${2:Y}"],p=${3:0.8},list=FALSE)
+	$1.trn <- $1[train.index,]
+	$1.tst <- $1[-train.index,]
 
 	ctrl  <- trainControl(method  = "cv",number  = 10) #, summaryFunction = multiClassSummary
 	
