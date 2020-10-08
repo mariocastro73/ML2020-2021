@@ -5,11 +5,9 @@ set.seed(123)
 n <- 50
 x <- runif(n)
 noise <- 0.2 # The standard deviation of the noise added to the data
-y <- 0.3 + x + rnorm(n,0,noise) # Slope: 1 Intercept: 0.3
-data <- data.frame(x=x,y=y)
-g <- ggplot(data,aes(x,y)) + geom_point() + geom_smooth()
-print(g)
-# pairs.panels(data)
+y <- 0.3 + x + rnorm(n,0,noise) # Slope: 1 Intercept: 0.3 Noise: 0.2
+data <- data.frame(x=x,y=y) # Assemble the dataframe
+ggplot(data,aes(x,y)) + geom_point() + geom_smooth() # Fancy plot
 
 plot(data,pch=19,cex=.7,ylim=c(0,2))
 abline(0,1,col='orange',lwd=2)
