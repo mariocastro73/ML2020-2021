@@ -108,3 +108,36 @@ fit.mlp <- train(Y ~ ., data = data.trn, method = "nnet",
                  maxit=25)
 plot(fit.mlp)
 print(fit.mlp)
+
+train.index <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
+data.trn <- data[train.index,]
+data.tst <- data[-train.index,]
+
+ctrl  <- trainControl(method  = "cv",number  = 10) 
+#, summaryFunction = multiClassSummary,
+# classProbs=T,# Required for the ROC curves
+# savePredictions = T) # Required for the ROC curves
+set.seed(1234)
+fit.tree <- train(Y ~ ., data = data.trn, method = "rpart",
+  trControl = ctrl, 
+  # preProcess = c("center","scale"), 
+  # tuneGrid =data.frame(k=10))
+  tuneLength = 20)
+
+pred <- predict(fit.tree,data.tst)
+confusionMatrix(table(data.tst[,"Y"],pred))
+print(fit.tree)
+plot(fit.tree)
+library(rpart.plot)
+rpart.plot(fit.tree$finalModel)
+varImp(fit.tree$finalModel)
+
+fit.svm <- train(Y ~ ., data = data.trn, method = "svmLinear",
+                trControl = ctrl, 
+                preProcess = c("center","scale"), 
+                # tuneGrid =data.frame(k=10))
+                tuneLength = 10)
+pred <- predict(fit.svm,data.tst)
+confusionMatrix(table(data.tst[,"Y"],pred))
+print(fit.svm)
+plot(fit.svm)
