@@ -8,6 +8,7 @@ library(klaR)
 # load the data
 data(PimaIndiansDiabetes)
 data  <-  PimaIndiansDiabetes
+str(data)
 # Tip #1: Eye inspection and correlations
 library(psych)
 pairs.panels(data)
@@ -18,6 +19,7 @@ par(mfrow=c(3,3))
 for(i in 1:8) plot(data[,i]~ data$diabetes,col=2:3,xlab='diabetes',ylab=nam[i])
 # Again, look at those outliers!!!! Not today, not today, .... BUT YOU SHOULD!
 par(mfrow=c(1,1))
+
 train.index <- createDataPartition(data[,"diabetes"],p=0.8,list=FALSE)
 data.trn <- data[train.index,]
 data.tst <- data[-train.index,]
