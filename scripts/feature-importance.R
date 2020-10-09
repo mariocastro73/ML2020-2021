@@ -74,24 +74,24 @@ ctrl  <- trainControl(method  = "cv",number  = 10,
                       savePredictions = T) # Required for the ROC curves
 
 # Same nnets as above
-fit2.1 <- train(Y ~ ., data = data.trn, method = "nnet",
+fit.1 <- train(Y ~ ., data = data.trn, method = "nnet",
   trControl = ctrl, 
   preProcess = c("center","scale"), 
   tuneGrid = data.frame(decay=0,size=1))
 
-fit2.mlp <- train(Y ~ ., data = data.trn, method = "nnet",
+fit.mlp <- train(Y ~ ., data = data.trn, method = "nnet",
   trControl = ctrl, 
   preProcess = c("center","scale"), 
   tuneLength=5)
 
-pred <- predict(fit2.1,data.tst)
+pred <- predict(fit.1,data.tst)
 confusionMatrix(table(data.tst[,"Y"],pred))
-pred <- predict(fit2.mlp,data.tst)
+pred <- predict(fit.mlp,data.tst)
 confusionMatrix(table(data.tst[,"Y"],pred))
 # fit.1: Accuracy : 0.967 
 # fit.mlp: Accuracy : 0.9495
-plot(fit2.mlp)
-models <- list(net1=fit2.1,netcv=fit2.mlp)
+plot(fit.mlp)
+models <- list(net1=fit.1,netcv=fit.mlp)
 dotplot(resamples(models))
 evalm(models,gnames=c("1","cv"))
 # So how can we check what variable is important?
@@ -104,8 +104,8 @@ par(mfrow=c(1,1))
 
 # What else? 
 # For some models varImp gives ranks the variables
-varImp(fit2.1$finalModel)
-varImp(fit2.mlp$finalModel) # Both agree but note overfitting (for X2)
+varImp(fit.1$finalModel)
+varImp(fit.mlp$finalModel) # Both agree but note overfitting (for X2)
 
 # Simple correlations to asses variable importance
 filterVarImp(data[,-2],data[,2]) # Logistic regression "inside"
@@ -113,7 +113,7 @@ filterVarImp(data[,-2],data[,2]) # Logistic regression "inside"
 
 #  Sensitivity analysis
 library(NeuralSens)
-SensAnalysisMLP(fit2.mlp)
+SensAnalysisMLP(fit.mlp)
 
 ########################################################
 library(CORElearn)
@@ -124,3 +124,5 @@ reliefValues <- attrEval(Y ~ ., data = data,
                            estimator = "ReliefFequalK",
                            ## The number of instances tested:
                            ReliefIterations = 50)
+head(reliefValues)
+histogram(~X1+X2|Y,data)
