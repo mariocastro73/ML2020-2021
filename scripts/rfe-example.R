@@ -103,6 +103,9 @@ predictors(results)
 plot(results, type=c("g", "o"))
 
 # We have a veredict: Glucose, age and mass
+# NOTE: I mentioned above that the distributions of some variables are
+# very skewed, so I would take this results with a pinch of salt.
+# EXERCISE: Repeat again and you'll probably reach different conclusions
 
 fit.reduced <- train(diabetes ~ glucose+age+mass, data = data.trn, 
                 method = "nnet",
