@@ -79,6 +79,11 @@ varImp(fit.mlp$finalModel)
 with(data,plot(X1~Y,col=c(2,3)))
 with(data,plot(X2~Y,col=c(2,3)))
 histogram(~X1+X2|Y,data)
+filterVarImp(x=data[,-2],y=data[,2]) # 2 corresponds to Y
+# Works!
+# No       Yes
+# X1 0.9939939 0.9939939
+# X2 0.5210122 0.5210122
 
 models <- list(net1=fit.1,netcv=fit.mlp)
 dotplot(resamples(models))
