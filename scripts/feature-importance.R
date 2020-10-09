@@ -93,3 +93,17 @@ library(NeuralSens)
 SensAnalysisMLP(fit.mlp)
 
 
+# Tip #5 Compare different methods (those with varImp implemented)
+
+ctrl  <- trainControl(method  = "cv",number  = 10) 
+fit.rf <- train(Y ~ ., data = data.trn, method = "rf",
+  trControl = ctrl, 
+  preProcess = c("center","scale"), 
+  tuneLength = 10)
+fit.rpart <- train(Y ~ ., data = data.trn, method = "rpart",
+  trControl = ctrl, 
+  preProcess = c("center","scale"), 
+  tuneLength = 10)
+
+varImp(fit.rpart$finalModel)
+varImp(fit.rf$finalModel)
