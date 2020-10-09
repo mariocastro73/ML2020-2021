@@ -61,116 +61,66 @@ legend('bottomright',legend=c("1 neuron, decay=0","5 neurons, decay=0.001"),
 
 # Variable importance
 # Let's create a dummy variable
-data2 <- data
-data2$X2 <- runif(nrow(data2))
+data$X2 <- runif(nrow(data))
 ggplot(data,aes(X1,X2,col=Y)) + geom_point() # X2 is pure noise
 
 train.index <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
 data.trn <- data[train.index,]
 data.tst <- data[-train.index,]
 
-ctrl  <- trainControl(method  = "cv",number  = 10) 
-#, summaryFunction = multiClassSummary,
-# classProbs=T,# Required for the ROC curves
-# savePredictions = T) # Required for the ROC curves
+ctrl  <- trainControl(method  = "cv",number  = 10,
+                      summaryFunction = multiClassSummary,
+                      classProbs=T,# Required for the ROC curves
+                      savePredictions = T) # Required for the ROC curves
 
-fit.rf <- train(Y ~ ., data = data.trn, method = "rf",
+# Same nnets as above
+fit2.1 <- train(Y ~ ., data = data.trn, method = "nnet",
   trControl = ctrl, 
   preProcess = c("center","scale"), 
-  mtree=1000,
-  tuneLength = 2)
+  tuneGrid = data.frame(decay=0,size=1))
 
-print(fit.rf)
-pred <- predict(fit.rf,data.tst)
+fit2.mlp <- train(Y ~ ., data = data.trn, method = "nnet",
+  trControl = ctrl, 
+  preProcess = c("center","scale"), 
+  tuneLength=5)
+
+pred <- predict(fit2.1,data.tst)
 confusionMatrix(table(data.tst[,"Y"],pred))
-
-
-rocValues <- filterVarImp(data[,-2],data[,2])
-rocValues
-
-set.seed(1234)
-train.index <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
-data.trn <- data[train.index,]
-data.tst <- data[-train.index,]
-fit.1 <- train(Y ~ ., data = data.trn, method = "nnet",
-               trControl = ctrl, 
-               tuneGrid = data.frame(decay=0,size=1))
-
-fit.mlp <- train(Y ~ ., data = data.trn, method = "nnet",
-                 trControl = ctrl, 
-                 tuneLength = 5)
-plot(fit.mlp)
-print(fit.mlp)
-pred <- predict(fit.1,data.tst)
-table(data.tst[,"Y"],pred)
-pred <- predict(fit.mlp,data.tst)
-table(data.tst[,"Y"],pred)
-
-varImp(fit.1$finalModel)
-varImp(fit.mlp$finalModel)
-
-plotnet(fit.1$finalModel)
-plotnet(fit.mlp$finalModel)
-summary(fit.mlp)
-
-with(data,plot(X1~Y,col=c(2,3)))
-with(data,plot(X2~Y,col=c(2,3)))
-
-models <- list(net1=fit.1,netcv=fit.mlp)
+pred <- predict(fit2.mlp,data.tst)
+confusionMatrix(table(data.tst[,"Y"],pred))
+# fit.1: Accuracy : 0.967 
+# fit.mlp: Accuracy : 0.9495
+plot(fit2.mlp)
+models <- list(net1=fit2.1,netcv=fit2.mlp)
 dotplot(resamples(models))
 evalm(models,gnames=c("1","cv"))
+# So how can we check what variable is important?
+# Tip #1: Use your eyes
+par(mfrow=c(1,2))
+with(data,plot(X1~Y,col=c(2,3)))
+with(data,plot(X2~Y,col=c(2,3)))
+par(mfrow=c(1,1))
+# Clearly X2 is random noise
 
+# What else? 
+# For some models varImp gives ranks the variables
+varImp(fit2.1$finalModel)
+varImp(fit2.mlp$finalModel) # Both agree but note overfitting (for X2)
+
+# Simple correlations to asses variable importance
+filterVarImp(data[,-2],data[,2]) # Logistic regression "inside"
+# Clearly X2 sucks...
+
+#  Sensitivity analysis
 library(NeuralSens)
-SensAnalysisMLP(fit.mlp)
-
+SensAnalysisMLP(fit2.mlp)
 
 ########################################################
+library(CORElearn)
 
-set.seed(1234)
-data$X2 <- 100*runif(nrow(data))
-ggplot(data,aes(X1,X2,col=Y)) + geom_point()
-
-
-train.index <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
-data.trn <- data[train.index,]
-data.tst <- data[-train.index,]
-
-fit.mlp <- train(Y ~ ., data = data.trn, method = "nnet",
-                 trControl = ctrl, 
-                 tuneLength = 5,
-                 maxit=25)
-plot(fit.mlp)
-print(fit.mlp)
-
-train.index <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
-data.trn <- data[train.index,]
-data.tst <- data[-train.index,]
-
-ctrl  <- trainControl(method  = "cv",number  = 10) 
-#, summaryFunction = multiClassSummary,
-# classProbs=T,# Required for the ROC curves
-# savePredictions = T) # Required for the ROC curves
-set.seed(1234)
-fit.tree <- train(Y ~ ., data = data.trn, method = "rpart",
-  trControl = ctrl, 
-  # preProcess = c("center","scale"), 
-  # tuneGrid =data.frame(k=10))
-  tuneLength = 20)
-
-pred <- predict(fit.tree,data.tst)
-confusionMatrix(table(data.tst[,"Y"],pred))
-print(fit.tree)
-plot(fit.tree)
-library(rpart.plot)
-rpart.plot(fit.tree$finalModel)
-varImp(fit.tree$finalModel)
-
-fit.svm <- train(Y ~ ., data = data.trn, method = "svmLinear",
-                trControl = ctrl, 
-                preProcess = c("center","scale"), 
-                # tuneGrid =data.frame(k=10))
-                tuneLength = 10)
-pred <- predict(fit.svm,data.tst)
-confusionMatrix(table(data.tst[,"Y"],pred))
-print(fit.svm)
-plot(fit.svm)
+reliefValues <- attrEval(Y ~ ., data = data,
+                           ## There are many Relief methods
+                           ## available. See ?attrEval
+                           estimator = "ReliefFequalK",
+                           ## The number of instances tested:
+                           ReliefIterations = 50)
