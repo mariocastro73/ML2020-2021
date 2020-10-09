@@ -22,6 +22,8 @@ ctrl  <- trainControl(method  = "repeatedcv",
             number  = 10, # 10 folds
             classProbs=T,# Required for the ROC curves
             savePredictions = T) # Required for the ROC curves
+
+# The problem of overfitting: Let's compare a two mlp's with 1 and variable neurons each
 set.seed(1234)
 fit.1 <- train(Y ~ ., data = data.trn, method = "nnet",
   trControl = ctrl, 
@@ -32,28 +34,59 @@ fit.mlp <- train(Y ~ ., data = data.trn, method = "nnet",
  tuneLength = 5)
 plot(fit.mlp)
 print(fit.mlp)
+# [Accuracy was used to select the optimal model using the largest value.
+# The final values used for the model were size = 5 and decay = 0.001.]
+# It seems that 5 neurons is better than one...but....
 pred <- predict(fit.1,data.tst)
-table(data.tst[,"Y"],pred)
+confusionMatrix(table(data.tst[,"Y"],pred))
 pred <- predict(fit.mlp,data.tst)
-table(data.tst[,"Y"],pred)
+confusionMatrix(table(data.tst[,"Y"],pred))
+# Confusion matrices are similar and so they are other metrics
+# fit.1: Accuracy : 0.9596 
+# fit.mlp: Accuracy : 0.9293
+models <- list(net1=fit.1,netcv=fit.mlp)
+dotplot(resamples(models))
+evalm(models,gnames=c("1","cv"))
 
-
+# But let our eyes decide...
 with(data,plot(X1,as.numeric(Y)-1,col=Y))
 x <- seq(0,1,length=100)
 lines(x,predict(fit.1,data.frame(X1=x),type = 'prob')$Yes,pch=19,cex=.4,col=3)
 lines(x,predict(fit.mlp,data.frame(X1=x),type = 'prob')$Yes,pch=19,cex=.4,col=4)
 legend('bottomright',legend=c("1 neuron, decay=0","5 neurons, decay=0.001"),
        col=c(3,4),lwd=2,cex=.8)
-
-models <- list(net1=fit.1,netcv=fit.mlp)
-dotplot(resamples(models))
-evalm(models,gnames=c("1","cv"))
-
-# Dummy variable
+# fit.1 wins!
 
 
-data$X2 <- runif(nrow(data))
-ggplot(data,aes(X1,X2,col=Y)) + geom_point()
+
+# Variable importance
+# Let's create a dummy variable
+data2 <- data
+data2$X2 <- runif(nrow(data2))
+ggplot(data,aes(X1,X2,col=Y)) + geom_point() # X2 is pure noise
+
+train.index <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
+data.trn <- data[train.index,]
+data.tst <- data[-train.index,]
+
+ctrl  <- trainControl(method  = "cv",number  = 10) 
+#, summaryFunction = multiClassSummary,
+# classProbs=T,# Required for the ROC curves
+# savePredictions = T) # Required for the ROC curves
+
+fit.rf <- train(Y ~ ., data = data.trn, method = "rf",
+  trControl = ctrl, 
+  preProcess = c("center","scale"), 
+  mtree=1000,
+  tuneLength = 2)
+
+print(fit.rf)
+pred <- predict(fit.rf,data.tst)
+confusionMatrix(table(data.tst[,"Y"],pred))
+
+
+rocValues <- filterVarImp(data[,-2],data[,2])
+rocValues
 
 set.seed(1234)
 train.index <- createDataPartition(data[,"Y"],p=0.8,list=FALSE)
