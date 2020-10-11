@@ -123,7 +123,7 @@ fit.reduced2 <- train(diabetes ~ ., data = data.trn, method = "rpart",
                 tuneLength=10)
 pred <- predict(fit.reduced2,data.tst)
 confusionMatrix(table(data.tst[,"diabetes"],pred))
-fit.reduced3 <- train(diabetes ~ ., data = data.trn, method = "rf",
+fit.reduced3 <- train(diabetes ~ glucose+mass+age, data = data.trn, method = "rf",
                 trControl = ctrl, 
                 mtree=1000,
                 preProcess = c("center","scale"))
@@ -132,8 +132,12 @@ pred <- predict(fit.reduced3,data.tst)
 confusionMatrix(table(data.tst[,"diabetes"],pred))
 
 models <- list(nnet=fit.nnet,tree=fit.rpart,rf=fit.rf,nnet2=fit.reduced,tree2=fit.reduced2,rf2=fit.reduced3)
-evalm(models,gnames=c('net','tree','rf','net2','tree2','rf2'))
+evalm(models,gnames=c('net','tree','rf','net2','tree2','rf2'),plots="roc")
 
+# Compare predictions between training and testing sets
+tr <- evalm(fit.rf,plots=c('r')) # ROC curve for training (same as above)
+pred <- predict(fit.rf, newdata=data.tst, type="prob") 
+tst <- evalm(data.frame(pred, data.tst$diabetes),plots=c("r")) # ROC curve for testing
 # Now the full
 dotplot(resamples(models))
 res <- resamples(models)
