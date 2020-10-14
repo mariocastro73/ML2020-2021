@@ -72,3 +72,12 @@ hist(fit2$finalModel$residuals,col='skyblue',xlab='residuals',15)
 # Use lm built-in plot
 par(mfrow=c(2,2))
 plot(fit1)  # Pretty good overall.
+
+# What if nobody told us about BMI?
+data <- bmi[,c("Siri","Weight","Height")]
+pairs.panels(data)
+
+fit.2d <- lm(Siri~.,data)
+summary(fit1)
+summary(fit.2d) # Worse!!!
+# So there's something on BMI that summarizes stuff better...
