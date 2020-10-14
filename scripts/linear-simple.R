@@ -1,32 +1,46 @@
-data <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/anscombe.csv')
-with(d,plot(x1,y1,pch=20,col=4,cex=2))
+######################################################################################
+# Import dataset
+d <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/anscombe.csv')
+with(d,plot(x1,y1,pch=20,col=4,cex=2)) # Basic plotting
 abline(2,.5,lwd=3,col=3)
 abline(5,.25,lwd=3,col=4)
-abline(3,.5,lwd=3,col=2)
+abline(3,.5,lwd=3,col=2) # Best line
 
+# Low-cost minimization
+out <- c()
 for(a in seq(1,5,length=5)) {
     for(b in seq(0,1,length=5)) {
          yest <- b*d$x1+a
          res <-sum((d$y1-yest)^2)
+         out <- rbind(out,c(a,b,res))
          cat(c(a,b,res,"\n"))
        }
 }
+out[which.min(out[,3]),] # Slope: 0.5 Intercept: 3
 
 fit <- lm(y1~x1,d)
-summary(fit)
+summary(fit) # Same slope and intercept
+# Keep this: R^2=0.6665
 par(mfrow=c(1,1))
-with(d,plot(y1,pch=20,col=4,cex=2))
-abline(h=mean(d$y1),lwd=3,col=2)
-with(d,plot(x1,y1,pch=20,col=4,cex=2))
-abline(fit,lwd=3,col=2)
+with(d,plot(y1,pch=20,col=4,cex=2)) # Plot dependent variable
+abline(h=mean(d$y1),lwd=3,col=2) # Plot its mean
+with(d,plot(x1,y1,pch=20,col=4,cex=2)) # Plot Full data
+abline(fit,lwd=3,col=2) # Plot best fit
 
+variance.to.mean <- with(d,sum((y1-mean(y1))^2))
+ypred <- predict(fit,d)
+variance.to.fit <- with(d,sum((y1-ypred)^2))
+print(R2.by.hand <- 1-variance.to.fit/variance.to.mean)
+print(summary(fit)$r.squared)
+
+# Let's do the fit using caret
+library(caret)
 fit2 <- train(y1 ~ x1, data = d, method = "lm")
-summary(fit2)
-pred <- predict(fit.cv,data.tst)
-
+summary(fit2) # Same result as lm is computed using mathematical formulas.
 
 # How to interpret the coefficients and the correlation?
 bmi <- read.csv("https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/bmi.csv")
+str(bmi)
 with(bmi,plot(Fat~BMI,pch=19,col=4))
 summary(fit <- lm(Fat~BMI,bmi))
 abline(fit,lwd=2,col=2)
