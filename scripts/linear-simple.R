@@ -39,3 +39,16 @@ points(0,0,pch=19,col=2,cex=3)
 summary(fit <- lm(Fat~BMI,bmi.new))
 abline(fit,col=2,lwd=2)
 print(coef(fit)[2]^2)
+print(7.282e-01^2) # Same within rounding errors 
+
+# Regression toward the mean
+galton <- read.csv("https://ytliu0.github.io/Stat390EF-R-Independent-Study-archive/RMarkdownExercises/Galton.txt",sep='\t') # \t for tabs
+# str(galton)
+male <- galton$Gender=="M"
+with(galton[male,],{
+  plot(Height~Father,col=rgb(0,0,.7,.3),pch=19,cex=1.3)
+  print(summary(fit <- lm(Height~Father)))
+  abline(fit,lwd=5,col=2)
+  points(mean(Father),mean(Height),pch=19,cex=3,col=2)
+  })
+summary(galton[male,c(2,5)])
