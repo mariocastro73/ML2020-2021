@@ -2,7 +2,7 @@
 # http://jse.amstat.org/v4n1/datasets.johnson.html
 # Variable description
 # 1: Case Number
-# 2: Percent body fat using Brozek's equation,
+# 2: Percent body fat using Berzak's equation,
 # 3: Percent body fat using Siri's equation,
 # 4: Density (gm/cm^3)
 # 5: Age (yrs)
@@ -21,11 +21,10 @@
 # 18: Forearm circumference (cm)
 # 19: Wrist circumference (cm) "distal to the
 
-
-
+set.seed(1234) # Not necessary as lm is fitted mathematically, not "trained"
 bmi <- read.table('http://jse.amstat.org/datasets/fat.dat.txt')
 str(bmi)
-nam <- c("Case","Brozek","Siri","Density","Age","Weight","Height",
+nam <- c("Case","Body.Fat","Siri","Density","Age","Weight","Height",
          "BMI","Fat.Free.Weight","Neck","Chest","Abdomen","Hip",
          "Thigh","Knee","Ankle","Biceps","Forearm","Wrist")
 colnames(bmi) <- nam
@@ -36,7 +35,7 @@ par(mfrow=c(3,3))
 for(i in 2:10) hist(bmi[,i],xlab=nam[i],main="",col='skyblue')
 for(i in 11:18) hist(bmi[,i],xlab=nam[i],main="",col='skyblue')
 par(mfrow=c(2,2))
-tmp <- boxplot(bmi$Height)
+tmp <- boxplot(bmi$Height) # Boxplot has a "return" inside
 tmp$out
 tmp <- boxplot(bmi$Hip)
 tmp$out
@@ -44,40 +43,53 @@ tmp <- boxplot(bmi$Ankle)
 tmp$out
 tmp <- boxplot(bmi$Siri)
 tmp$out
-bmi <- bmi[bmi$Height>29.5 & bmi$Hip<116.1 & bmi$Ankle<33.7 & bmi$Siri<47.5,]
+# More elegant solution would involve using %in% or caret
+bmi <- bmi[bmi$Height>29.5 & bmi$Hip<116.1 & bmi$Ankle<29.6 & bmi$Siri<47.5,]
 par(mfrow=c(3,3)) 
 for(i in 2:10) hist(bmi[,i],xlab=nam[i],main="",col='skyblue')
 for(i in 11:18) hist(bmi[,i],xlab=nam[i],main="",col='skyblue')
 
-with(bmi,plot(Siri~Brozek))
-library(psych)
-pairs.panels(bmi[,c("Siri","BMI","Weight","Height")])
+with(bmi,plot(Siri~Body.Fat)) # Both formulas are equivalent
+
 
 # Regression using good-old "lm"
-fit1 <- lm(Siri ~ BMI,bmi)
-summary(fit1)
+par(mfrow=c(1,1))
+with(bmi,plot(BMI ~ Body.Fat))
+fit1 <- lm(Body.Fat ~ BMI,bmi)
+s1 <- summary(fit1) # summary has a "return" inside
+print(s1$r.squared) # Print R^2 alone
+
+# Use lm built-in plot (Always!)
+hist(fit1$residuals,col='skyblue',xlab='residuals')
+par(mfrow=c(2,2))
+plot(fit1)  # Pretty good overall.
+pred <- predict(fit1,bmi) # Do some predictions, etc...
+
 
 # Fit with caret
 library(caret)
-fit2 <- train(Siri ~ BMI,bmi,method='lm')
+fit2 <- train(Body.Fat ~ BMI,bmi,method='lm')
 summary(fit2)
-
-pred <- predict(fit2,bmi) # Predictions
-par(mfrow=c(1,1))
-with(bmi,plot(Siri~BMI))
-lines(bmi$BMI,pred,col=2,lwd=3)
-hist(fit1$residuals,col='skyblue',xlab='residuals',15)
 hist(fit2$finalModel$residuals,col='skyblue',xlab='residuals',15)
 
-# Use lm built-in plot
-par(mfrow=c(2,2))
-plot(fit1)  # Pretty good overall.
+########################################################
+# Multiple regression:  What if add more regressors?   #
+########################################################
+library(psych)
+data <- bmi[,c("Body.Fat","BMI","Age","Abdomen","Thigh")]
+pairs.panels(data) 
 
-# What if nobody told us about BMI?
-data <- bmi[,c("Siri","Weight","Height")]
-pairs.panels(data)
-
-fit.2d <- lm(Siri~.,data)
+fit.multi <- lm(Body.Fat ~ .,data)
 summary(fit1)
-summary(fit.2d) # Worse!!!
-# So there's something on BMI that summarizes stuff better...
+summary(fit.multi) # Much better!!!
+data <- bmi[,c("Body.Fat","Age","Abdomen")]
+fit.multi2 <- lm(Body.Fat ~ .,data)
+summary(fit.multi2) # Much better!!!
+
+# But don't cellebrate yet, let's see some plots
+par(mfrow=c(2,2))
+plot(fit.multi2) # good!
+
+# What variables follow the linear regression assumptions?
+data$residuals <- fit.multi$residuals
+pairs.panels(data[,-1])
