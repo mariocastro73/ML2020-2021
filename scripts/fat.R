@@ -114,3 +114,5 @@ print(summary(fit <- lm(Body.Fat ~ log(Weight)+log(Height),bmi))) # Better but l
 coef(fit)
 coef(fit)/44.22 # Almost a ratio of -2 for height
 # Remember that log(x1)-2*log(x2)=log(x1/x2^2) -> The formula for BMI!
+par(mfrow=c(2,2))
+plot(fit) # Passes the tests
