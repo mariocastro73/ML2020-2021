@@ -93,3 +93,24 @@ plot(fit.multi2) # good!
 # What variables follow the linear regression assumptions?
 data$residuals <- fit.multi2$residuals
 pairs.panels(data[,-1])
+
+
+#### Extra: the origins of BMI
+# Let's try some fits with weight and height
+library(ggplot2)
+g <- ggplot(bmi)
+g + geom_point(aes(Height,Body.Fat))
+g + geom_point(aes(Weight,Body.Fat)) # Much better
+g + geom_point(aes(Weight,Height)) # But see the correlation between them!
+g + geom_point(aes(BMI,Body.Fat)) # Better, but why?
+
+print(summary(lm(Body.Fat ~ BMI,bmi))) # Looks banana-shaped
+print(summary(lm(Body.Fat ~ Weight+Height,bmi))) # Worse fit than BMI
+# What if we consider log (log-normality)
+print(summary(lm(Body.Fat ~ log(BMI),bmi))) # Slightly better. 
+# What if we use Height and Weight with log
+print(summary(fit <- lm(Body.Fat ~ log(Weight)+log(Height),bmi))) # Better but look at the coefficients
+
+coef(fit)
+coef(fit)/44.22 # Almost a ratio of -2 for height
+# Remember that log(x1)-2*log(x2)=log(x1/x2^2) -> The formula for BMI!
