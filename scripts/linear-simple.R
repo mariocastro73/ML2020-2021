@@ -1,12 +1,7 @@
 ######################################################################################
 # Import dataset
 d <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/anscombe.csv')
-with(d,plot(x1,y1,pch=20,col=4,cex=2)) # Basic plotting
-abline(2,.5,lwd=3,col=3)
-abline(5,.25,lwd=3,col=4)
-abline(3,.5,lwd=3,col=2) # Best line
 
-# for fun (Anscombe's quartet)
 par(mfrow=c(2,2))
 with(d,{
   plot(y1~x1,pch=19,col='darkorange')
@@ -22,6 +17,14 @@ with(d,{
   abline(fit <- lm(y4~x4))
   print(summary(fit)$r.squared)
 })
+
+par(mfrow=c(1,1)) # Back to our topic
+with(d,plot(x1,y1,pch=20,col=4,cex=2)) # Basic plotting
+abline(2,.5,lwd=3,col=3)
+abline(5,.25,lwd=3,col=4)
+abline(3,.5,lwd=3,col=2) # Best line
+
+# for fun (Anscombe's quartet)
 
 # Low-cost minimization
 out <- c()
@@ -93,3 +96,4 @@ with(galton.new[male,],{
 
 sapply(galton[male,c(2,5)],mean)
 sapply(galton[male,c(2,5)],sd)
+0.44775^2
