@@ -6,6 +6,23 @@ abline(2,.5,lwd=3,col=3)
 abline(5,.25,lwd=3,col=4)
 abline(3,.5,lwd=3,col=2) # Best line
 
+# for fun (Anscombe's quartet)
+par(mfrow=c(2,2))
+with(d,{
+  plot(y1~x1,pch=19,col='darkorange')
+  abline(fit <- lm(y1~x1))
+  print(summary(fit)$r.squared)
+  plot(y2~x2,pch=19,col='darkorange')
+  abline(fit <- lm(y2~x2))
+  print(summary(fit)$r.squared)
+  plot(y3~x3,pch=19,col='darkorange')
+  abline(fit <- lm(y3~x3))
+  print(summary(fit)$r.squared)
+  plot(y4~x4,pch=19,col='darkorange')
+  abline(fit <- lm(y4~x4))
+  print(summary(fit)$r.squared)
+})
+
 # Low-cost minimization
 out <- c()
 for(a in seq(1,5,length=5)) {
