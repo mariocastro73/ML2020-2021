@@ -65,4 +65,5 @@ with(galton[male,],{
   abline(fit,lwd=5,col=2)
   points(mean(Father),mean(Height),pch=19,cex=3,col=2)
   })
-summary(galton[male,c(2,5)])
+sapply(galton[male,c(2,5)],mean)
+sapply(galton[male,c(2,5)],sd)
