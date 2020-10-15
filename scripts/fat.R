@@ -116,3 +116,11 @@ coef(fit)/44.22 # Almost a ratio of -2 for height
 # Remember that log(x1)-2*log(x2)=log(x1/x2^2) -> The formula for BMI!
 par(mfrow=c(2,2))
 plot(fit) # Passes the tests
+
+# Why the logarithm? Because Weight (in particular) is not normally distributed but
+# log-normally distributed (empirically)
+hist(bmi$Weight,20)
+BoxCoxTrans(bmi$Weight) # See that the box-cox lambda is close to 0 (logarithm)
+# The height is harder to tell becase a narrow log-normal is indistinguisheable from a normal
+
+
