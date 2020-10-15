@@ -41,8 +41,8 @@ summary(fit2) # Same result as lm is computed using mathematical formulas.
 # How to interpret the coefficients and the correlation?
 bmi <- read.csv("https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/bmi.csv")
 str(bmi)
-with(bmi,plot(Fat~BMI,pch=19,col=4))
-summary(fit <- lm(Fat~BMI,bmi))
+with(bmi,plot(Body.Fat~BMI,pch=19,col=4))
+summary(fit <- lm(Body.Fat~BMI,bmi))
 abline(fit,lwd=2,col=2)
 
 # Correlation is the slope for the standardize variables
