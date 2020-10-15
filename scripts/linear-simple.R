@@ -65,5 +65,14 @@ with(galton[male,],{
   abline(fit,lwd=5,col=2)
   points(mean(Father),mean(Height),pch=19,cex=3,col=2)
   })
+f <- preProcess(galton,method = c('scale','center'))
+galton.new <- predict(f,galton)
+with(galton.new[male,],{
+  plot(Height~Father,col=rgb(0,0,.7,.3),pch=19,cex=1.3)
+  print(summary(fit <- lm(Height~Father)))
+  abline(fit,lwd=5,col=2)
+  points(mean(Father),mean(Height),pch=19,cex=3,col=2)
+  })
+
 sapply(galton[male,c(2,5)],mean)
 sapply(galton[male,c(2,5)],sd)
