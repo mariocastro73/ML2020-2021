@@ -91,5 +91,5 @@ par(mfrow=c(2,2))
 plot(fit.multi2) # good!
 
 # What variables follow the linear regression assumptions?
-data$residuals <- fit.multi$residuals
+data$residuals <- fit.multi2$residuals
 pairs.panels(data[,-1])
