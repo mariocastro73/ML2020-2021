@@ -48,9 +48,9 @@ abline(fit,lwd=2,col=2)
 # Correlation is the slope for the standardize variables
 f <- preProcess(bmi,method = c("center","scale")) # Standardize with caret
 bmi.new <- predict(f,bmi)
-with(bmi.new,plot(Fat~BMI,pch=19,col=4))
+with(bmi.new,plot(Body.Fat~BMI,pch=19,col=4))
 points(0,0,pch=19,col=2,cex=3)
-summary(fit <- lm(Fat~BMI,bmi.new))
+summary(fit <- lm(Body.Fat~BMI,bmi.new))
 abline(fit,col=2,lwd=2)
 print(coef(fit)[2]^2)
 print(7.282e-01^2) # Same within rounding errors 
