@@ -1,0 +1,8 @@
+simpsons <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/simpsons.csv')
+# simpsons <- read.csv('datasets/simpsons.csv')
+str(simpsons)  
+summary(simpsons)  
+plot(simpsons)
+summary(fit <- lm(y~x,simpsons))
+abline(fit,lwd=2,col=2)
+plot(fit)
