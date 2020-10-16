@@ -1,0 +1,21 @@
+Airline,Airport,Flights,Delay	
+Alaska Airlines,Los Angeles,497,Ontime	
+Alaska Airlines,Los Angeles,62,Delayed	
+America West,Los Angeles,694,Ontime	
+America West,Los Angeles,117,Delayed	
+Alaska Airlines,Phoenix,221,Ontime	
+Alaska Airlines,Phoenix,12,Delayed	
+America West,Phoenix,4840,Ontime	
+America West,Phoenix,415,Delayed	
+Alaska Airlines,San Diego,212,Ontime	
+Alaska Airlines,San Diego,20,Delayed	
+America West,San Diego,383,Ontime	
+America West,San Diego,65,Delayed	
+Alaska Airlines,San Francisco,503,Ontime	
+Alaska Airlines,San Francisco,102,Delayed	
+America West,San Francisco,320,Ontime	
+America West,San Francisco,129,Delayed	
+Alaska Airlines,Seattle,1841,Ontime	
+Alaska Airlines,Seattle,305,Delayed	
+America West,Seattle,201,Ontime	
+America West,Seattle,61,Delayed	
