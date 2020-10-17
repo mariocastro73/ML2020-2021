@@ -17,7 +17,7 @@ plot(fit$finalModel)
 
 pairs.panels(kidiq[,1:3])
 
-summary(fit <- train(kid_score ~ mom_hs*mom_iq, kidiq),method='lm')
+summary(fit <- train(kid_score ~ mom_hs*mom_iq, kidiq,method='lm'))
 par(mfrow=c(2,2))
 plot(fit$finalModel)
 par(mfrow=c(1,1))
