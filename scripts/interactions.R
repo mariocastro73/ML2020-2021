@@ -1,31 +1,39 @@
-library(psych)
+
 set.seed(999)
 ######################################################################################
 
 kidiq <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/kidiq.csv')
-str(kidiq)
-with(kidiq,plot(kid_score~mom_iq))
-
-summary(fit <- train(kid_score ~ mom_iq, kidiq,method='lm'))
-abline(fit$finalModel,col=2,lwd=3)
-par(mfrow=c(2,2))
-plot(fit$finalModel)
-
-summary(fit <- train(kid_score ~ mom_hs+mom_iq, kidiq,method='lm'))
-par(mfrow=c(2,2))
-plot(fit$finalModel)
-
-pairs.panels(kidiq[,1:3])
-
-summary(fit <- train(kid_score ~ mom_hs*mom_iq, kidiq,method='lm'))
-par(mfrow=c(2,2))
-plot(fit$finalModel)
+# str(kidiq)
 par(mfrow=c(1,1))
 
+with(kidiq,plot(kid_score~mom_iq,xlab="Mom's IQ",ylab="Kid's score",pch=19,cex.axis=1.5,cex.lab=2))
+
+summary(fit.hs <- lm(kid_score ~ mom_hs, kidiq))
+summary(fit.iq <- lm(kid_score ~ mom_iq, kidiq))
+abline(fit.iq,col=2,lwd=3)
+par(mfrow=c(2,2))
+plot(fit.iq)
+
+summary(fit.additive <- lm(kid_score ~ mom_hs+mom_iq, kidiq))
+par(mfrow=c(2,2))
+plot(fit.additive)
+
+library(psych)
+pairs.panels(kidiq[,1:3])
+
+summary(fit.interaction <- lm(kid_score ~ mom_hs*mom_iq, kidiq))
+par(mfrow=c(2,2))
+plot(fit.interaction)
+# Look at the residuals
+boxplot(fit.interaction$residuals~kidiq$mom_hs)
+plot(fit.interaction$residuals~kidiq$mom_iq)
+
+summary(fit <- train(kid_score ~ mom_hs*mom_iq, kidiq,method='lm'))
 
 
 ######################################################################################
-
+# MOCK Data
+######################################################################################
 n <- 300
 noise <- 0.2
 x1 <- runif(n)
@@ -38,11 +46,8 @@ print(summary(fit1 <- lm(y ~ x1+x2,data)))
 # Looks good, but...
 par(mfrow=c(2,2))
 plot(fit1)
-
-# Another way to plot it 
-# par(mfrow=c(1,1))
-# pred <- predict(fit1,data)
-# plot(pred,fit1$residuals)
+# Always do this
+pairs.panels(data.frame(data$x1,data$x2,fit1$residuals)) # Panels in the last line look terrible
 
 ######################################################################################
 # Let's use interactions
@@ -51,6 +56,30 @@ plot(fit2) # Bingo!
 
 print(sd(fit1$residuals))
 print(sd(fit2$residuals))
+
+# Always do this
+pairs.panels(data.frame(data$x1,data$x2,fit2$residuals)) # Panels in the last line look really nice.
+
+######################################################################################
+# Use cross validation to see how well the model generalizes to new data
+
+library(caret)
+fit.cv <- train(y ~ x1+x2, data = data, method = "lm",
+                trControl = trainControl(method  = "cv",number  = 10), 
+                preProcess = c("center","scale"))  
+print(fit.cv)
+print(fit.cv$resample)
+summary(fit.cv$resample)
+
+fit.cv2 <- train(y ~ x1*x2, data = data, method = "lm",
+                 trControl = trainControl(method  = "cv",number  = 10), 
+                 preProcess = c("center","scale"))  
+print(fit.cv2)
+print(fit.cv2$resample)
+summary(fit.cv2$resample)
+summary(fit.cv$resample)
+
+
 
 ######################################################################################
 # Interaction with factors
