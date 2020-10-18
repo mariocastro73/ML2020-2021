@@ -41,3 +41,25 @@ cc <- coef(ridge.fit$finalModel, ridge.fit$bestTune$lambda)
 abline(h=cc[2],lty=2)
 abline(h=cc[3],lty=2,col=2)
 
+######################################################################################
+# Partial least squares
+library(caret)
+library(AppliedPredictiveModeling)
+data(solubility)
+data <- solTrainXtrans
+data$solubility = solTrainY
+
+set.seed(100)
+fit.pls <- train(solubility ~ ., data = data, method = "pls",
+  trControl = trainControl(method  = "cv",number  = 10), 
+  preProcess = c("center","scale"), 
+  tuneLength = 100)
+
+print(fit.pls)
+plot(fit.pls)
+
+par(mar=c(5.1,7.1,4.1,2.1)) # Change margins
+plot(data$solubility,predict(fit.pls, data, ncomp=18),xlab='Data',ylab='Prediction',cex.lab=1.7,cex.axis=1.5)
+abline(0,1,lwd=3,col=2)
+
+hist(data$solubility-predict(fit.pls, data, ncomp=18),xlab='residuals',cex.lab=1.7,cex.axis=1.5,col='skyblue',main="")
