@@ -24,11 +24,19 @@ pairs.panels(kidiq[,1:3])
 summary(fit.interaction <- lm(kid_score ~ mom_hs*mom_iq, kidiq))
 par(mfrow=c(2,2))
 plot(fit.interaction)
+par(mfrow=c(1,1))
+summary(kidiq)
+score <- predict(fit.interaction,kidiq)
+with(kidiq,plot(mom_iq,kid_score,col=rgb(mom_hs,0,0,.5),pch=mom_hs+18))
+legend('bottomright',legend=c("No HS","HS"),col=rgb(0:1,0,0,.8),pch=18:19)
+x <- 70:140
+lines(x,-11.48+(.97-.48)*x+51,xlim=c(20,140),lwd=4)
+lines(x,-11.48+(.97)*x,lwd=4,col=2)
+
 # Look at the residuals
 boxplot(fit.interaction$residuals~kidiq$mom_hs)
 plot(fit.interaction$residuals~kidiq$mom_iq)
 
-summary(fit <- train(kid_score ~ mom_hs*mom_iq, kidiq,method='lm'))
 
 
 ######################################################################################
