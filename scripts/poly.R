@@ -37,7 +37,7 @@ abline(0,1,col=2,lwd=4)
 library(caret)
 my.summary <- function(fit) {
   cat("Mean R^2:",mean(fit$resample$Rsquared)," Sd R^2:",sd(fit$resample$Rsquared),
-    "Mean R^2:",mean(fit$resample$RMSE)," Sd R^2:",sd(fit$resample$RMSE))
+    "Mean RMSE:",mean(fit$resample$RMSE)," Sd RMSE:",sd(fit$resample$RMSE))
   }
 fit1.cv <- train(y ~ x , data = data, method = "lm",
   trControl = trainControl(method  = "cv",number  = 10))
