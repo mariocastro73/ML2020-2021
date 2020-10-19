@@ -26,6 +26,25 @@ par(mfrow=c(1,3))
 plot(data$y,predict(fit1,data),main='Linear regression',pch=19,
      cex=1.5,cex.lab=2,cex.axis=2,xlab='data',ylab='prediction',cex.main=2)
 abline(0,1,col=2,lwd=4)
-plot(data$y,predict(fit1,data),main='Quadratic regression',pch=19,
+plot(data$y,predict(fit2,data),main='Quadratic regression',pch=19,
      cex=1.5,cex.lab=2,cex.axis=2,xlab='data',ylab='prediction',cex.main=2)
 abline(0,1,col=2,lwd=4)
+plot(data$y,predict(fit3,data),main='Cubic regression',pch=19,
+     cex=1.5,cex.lab=2,cex.axis=2,xlab='data',ylab='prediction',cex.main=2)
+abline(0,1,col=2,lwd=4)
+
+## Redux: Use caret and cross validation
+library(caret)
+my.summary <- function(fit) {
+  cat("Mean R^2:",mean(fit$resample$Rsquared)," Sd R^2:",sd(fit$resample$Rsquared),
+    "Mean R^2:",mean(fit$resample$RMSE)," Sd R^2:",sd(fit$resample$RMSE))
+  }
+fit1.cv <- train(y ~ x , data = data, method = "lm",
+  trControl = trainControl(method  = "cv",number  = 10))
+fit2.cv <- train(y ~ x +I(x^2), data = data, method = "lm",
+  trControl = trainControl(method  = "cv",number  = 10))
+fit3.cv <- train(y ~ x +I(x^2)+I(x^3), data = data, method = "lm",
+  trControl = trainControl(method  = "cv",number  = 10))
+my.summary(fit1.cv)
+my.summary(fit2.cv)
+my.summary(fit3.cv)
