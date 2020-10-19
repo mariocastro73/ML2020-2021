@@ -1,0 +1,7 @@
+bmi <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/bmi.csv')
+library(psych)
+pairs.panels(bmi)
+1/(1-summary(fit.BMI <- lm(BMI~Age+Abdomen+Thigh,bmi))$r.squared)
+1/(1-summary(fit.Age <- lm(Age~BMI+Abdomen+Thigh,bmi))$r.squared)
+1/(1-summary(fit.Abdomen <- lm(Abdomen~BMI+Age+Thigh,bmi))$r.squared)
+1/(1-summary(fit.Thigh <- lm(Thigh~BMI+Age+Abdomen,bmi))$r.squared)
