@@ -104,6 +104,8 @@ vif(lm.fit$finalModel)
 barplot(vif(lm.fit$finalModel),las=2,col='darkblue')
 abline(h=10,col=2,lwd=2)
 which(vif(lm.fit$finalModel)>10)
+which(vif(lm.fit$finalModel)>40)
+which(vif(lm.fit$finalModel)>100)
 
 #==================================================================
 ## SECOND model removing by hand
