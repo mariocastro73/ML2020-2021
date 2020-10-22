@@ -303,7 +303,9 @@ print(varImp(lm.RFE))
 plot(varImp(ridge.fit))
 plot(varImp(lasso.fit))
 # All methods agree that your performance in the
-# past is not a good predictor of the future salary, but strangely enough, your age is
-# 
+# past is not a good predictor of the future salary, but strangely enough, 
+# how many years you've been playing is (Years)
+# Also the division and the league, of course
+# Finally, hits and errors "weigh" the same! Fun!
 plot(varImp(pcr.fit)) # Applicable but not useful as the predictors are mixed
 plot(varImp(plsr.fit))# Applicable but not useful as the predictors are mixed
