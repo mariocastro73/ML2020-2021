@@ -27,10 +27,6 @@ print(gg.cub)
 # Loess
 gg.lo <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='loess') + facet_grid(class ~.)
-# Automatic GAM (automatic optimal splines)
-gg.gam <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
-  geom_smooth(method='gam')+ facet_grid(class ~.)
-print(gg.gam)
 # Natural splines
 gg.ns2 <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='gam',formula=y ~ splines::ns(x, 2)) + facet_grid(class ~.)
@@ -41,11 +37,14 @@ print(gg.ns3)
 gg.bs2 <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='gam',formula=y ~ splines::bs(x, 2)) + facet_grid(class ~.)
 print(gg.bs2)
+gg.ns30 <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
+  geom_smooth(method='gam',formula=y ~ splines::ns(x, 30)) + facet_grid(class ~.)
+print(gg.ns30)
 gg.bs30 <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='gam',formula=y ~ splines::bs(x, 30)) + facet_grid(class ~.)
 print(gg.bs30)
 
 x11(width = 16,height = 10)
-ggarrange(gg.lm,gg.qua,gg.cub,gg.lo,gg.gam,gg.ns2,gg.ns3,gg.bs2,gg.bs30,
-          labels = c("Linear", "Quadratic", "Cubic","LOESS","GAM","NatSpline2","NatSpline3","Spline2","Spline30"))
+ggarrange(gg.lm,gg.qua,gg.cub,gg.lo,gg.ns2,gg.ns3,gg.bs2,gg.ns30,gg.bs30,
+          labels = c("Linear", "Quadratic", "Cubic","LOESS","NatSpline2","NatSpline3","Spline2","NatSpline30","Spline30"))
 
