@@ -5,6 +5,7 @@ library(ggplot2)
 ########################################################
 set.seed(999)
 t <- seq(0,3.5*pi/2,length=100)
+data <- data.frame(Predictor=t,Output=sin(t)+rnorm(100,0,.35))
 #################################################################
 # ggplot do all this stuff for us with the function "geom_smooth"
 #################################################################
