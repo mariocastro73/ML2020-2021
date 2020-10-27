@@ -24,7 +24,7 @@ print(gg.cub)
 # Loess
 gg.lo <- ggplot(data,aes(x=Predictor,y=Output))+geom_point()+
   geom_smooth(method='loess')
-# Automatic GAM
+#  GAM (automatic optimal splines)
 gg.gam <- ggplot(data,aes(x=Predictor,y=Output))+geom_point()+
   geom_smooth(method='gam')
 print(gg.gam)
