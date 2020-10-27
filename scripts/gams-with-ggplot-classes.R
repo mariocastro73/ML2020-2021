@@ -7,7 +7,7 @@ set.seed(999)
 n <- 120
 t <- seq(0,3.5*pi/2,length=n)
 class <- as.factor(sample(c("A","B","C"),n/3,replace = TRUE))
-data <- data.frame(Predictor=t,Output=sin(t)-.5*sin(2*t)+rnorm(n,0,.35),class=class)
+data <- data.frame(Predictor=t,Output=sin(t)-.5*sin(as.numeric(class)*t)+rnorm(n,0,.35),class=class)
 #################################################################
 # ggplot do all this stuff for us with the function "geom_smooth"
 #################################################################
@@ -47,5 +47,5 @@ print(gg.bs30)
 
 x11(width = 16,height = 10)
 ggarrange(gg.lm,gg.qua,gg.cub,gg.lo,gg.gam,gg.ns2,gg.ns3,gg.bs2,gg.bs30,
-          labels = c("Linear", "Quadratic", "Cubic","LOESS","GAM","NatSpline2","NatSpline3","Spline2","Spline3"))
+          labels = c("Linear", "Quadratic", "Cubic","LOESS","GAM","NatSpline2","NatSpline3","Spline2","Spline30"))
 
