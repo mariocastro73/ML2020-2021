@@ -31,13 +31,17 @@ print(gg.cub)
 # Loess
 gg.lo <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='loess') + facet_grid(class ~.)
+print(gg.lo)
+
 # Natural splines
 gg.ns2 <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='gam',formula=y ~ splines::ns(x, 2)) + facet_grid(class ~.)
 print(gg.ns2)
+
 gg.ns3 <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='gam',formula=y ~ splines::ns(x, 3)) + facet_grid(class ~.)
 print(gg.ns3)
+
 gg.bs2 <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='gam',formula=y ~ splines::bs(x, 2)) + facet_grid(class ~.)
 print(gg.bs2)
