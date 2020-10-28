@@ -1,3 +1,7 @@
+##########################################################
+# EXPLORATORY NON-PARAMETRIC REGRESSION IN R WITH GGPLOT #
+##########################################################
+
 require(smooth)
 library(ggpubr)
 library(ggplot2)
