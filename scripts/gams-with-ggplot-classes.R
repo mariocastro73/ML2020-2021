@@ -52,7 +52,7 @@ gg.bs30 <- ggplot(data,aes(x=Predictor,y=Output,col=class))+geom_point()+
   geom_smooth(method='gam',formula=y ~ splines::bs(x, 30)) + facet_grid(class ~.)
 print(gg.bs30)
 
-x11(width = 16,height = 10)
+x11(width = 16,height = 10) # comment this line if you have problems with it
 ggarrange(gg.lm,gg.qua,gg.cub,gg.lo,gg.ns2,gg.ns3,gg.bs2,gg.ns30,gg.bs30,
           labels = c("Linear", "Quadratic", "Cubic","LOESS","NatSpline2","NatSpline3","Spline2","NatSpline30","Spline30"))
 
