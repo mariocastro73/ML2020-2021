@@ -101,7 +101,7 @@ RMSE(pred,obs = data$Output)
 # Let's play with random forests
 ######################################################################################
 set.seed(1234)
-Diabetes <- read.csv('datasets/Diabetes.csv',sep=';')
+Diabetes <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/Diabetes.csv',sep=';')
 summary(Diabetes)
 
 fit.rf <- train(GLUCOSE ~ BLOODPRESS+SKINTHICKNESS+INSULIN+BODYMASSINDEX+AGE, data = Diabetes, method = "rf",
@@ -109,7 +109,10 @@ fit.rf <- train(GLUCOSE ~ BLOODPRESS+SKINTHICKNESS+INSULIN+BODYMASSINDEX+AGE, da
                 preProcess = c("center","scale"),
                 tuneLength = 4)
 fit.rf
-pred <- predict(fit.rpart,data)
-plot(data)
-lines(data$Predictor,pred,col='darkorange',lwd=2)
-rpart.plot(fit.rpart$finalModel)
+pred <- predict(fit.rf,Diabetes)
+Diabetes$pred <- pred
+ggplot(Diabetes,aes(x=pred))  + geom_histogram()
+ggplot(Diabetes,aes(x=pred,y=GLUCOSE)) + geom_point() +
+  geom_smooth() + geom_abline(slope=1,intercept=0,color=2) # Problems with outliers
+
+
