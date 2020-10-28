@@ -63,7 +63,7 @@ qqline(data$Output-pred,col=2,lwd=2) # Ups,clearly SVM doesn't care for outliers
 ######################################################################################
 fit.rpart <- train(Output ~ ., data = data.trn, method = "rpart",
   trControl = ctrl, 
-  preProcess = c("center","scale"), 
+  # preProcess = c("center","scale"), 
   tuneGrid=data.frame(cp=10^seq(-5,-2,length=10)))
   # tuneLength = 20)
 ggplot(fit.rpart)
@@ -90,7 +90,7 @@ RMSE(data$pred.tree,obs = data$Output)
 set.seed(1234)
 fit.rpart <- train(Output ~ ., data = data.trn, method = "rpart",
                 trControl = ctrl, 
-                preProcess = c("center","scale"), 
+                # preProcess = c("center","scale"), 
                 tuneGrid=data.frame(cp=.05))
 # tuneLength = 20)
 pred <- predict(fit.rpart,data)
@@ -104,15 +104,31 @@ set.seed(1234)
 Diabetes <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/Diabetes.csv',sep=';')
 summary(Diabetes)
 
-fit.rf <- train(GLUCOSE ~ BLOODPRESS+SKINTHICKNESS+INSULIN+BODYMASSINDEX+AGE, data = Diabetes, method = "rf",
+fit.rf <- train(GLUCOSE ~ BLOODPRESS+SKINTHICKNESS+INSULIN+BODYMASSINDEX+AGE, data = Diabetes, 
+                method = "rf",
                 trControl = ctrl, 
                 preProcess = c("center","scale"),
                 tuneLength = 4)
 fit.rf
+
+
 pred <- predict(fit.rf,Diabetes)
-Diabetes$pred <- pred
-ggplot(Diabetes,aes(x=pred))  + geom_histogram()
-ggplot(Diabetes,aes(x=pred,y=GLUCOSE)) + geom_point() +
+Diabetes$pred.rf <- pred
+ggplot(Diabetes,aes(x=pred.rf))  + geom_histogram()
+ggplot(Diabetes,aes(x=pred.rf,y=GLUCOSE)) + geom_point() +
   geom_smooth() + geom_abline(slope=1,intercept=0,color=2) # Problems with outliers
 
+plot(varImp(fit.rf))
 
+
+fit.lm <- train(GLUCOSE ~ BLOODPRESS+SKINTHICKNESS+INSULIN+BODYMASSINDEX+AGE, data = Diabetes, 
+                method = "lm",
+                trControl = ctrl, 
+                preProcess = c("center","scale"),
+                tuneLength = 4)
+fit.lm
+pred <- predict(fit.lm,Diabetes)
+Diabetes$pred.lm <- pred
+plot(varImp(fit.lm))
+RMSE(Diabetes$pred.rf,Diabetes$GLUCOSE)
+RMSE(Diabetes$pred.lm,Diabetes$GLUCOSE)
