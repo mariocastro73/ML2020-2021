@@ -55,3 +55,30 @@ autoplot(data) + # compare them all
   autolayer(snaive(data,h=14),PI=FALSE,series="Seas. Naive") +
   autolayer(rwf(data,h=14,drift=TRUE),PI=FALSE,series="Drift") +
   autolayer(meanf(data,h=14),PI=FALSE,series = "Mean")
+
+
+### 
+
+autoplot(ausbeer)
+# Subsetting/slicing
+autoplot(window(ausbeer,start=1970))
+autoplot(window(ausbeer,end=1970))
+autoplot(window(ausbeer,start=1973,end=2008))
+ausbeer
+subset(ausbeer,start=1,end=7)
+tail(ausbeer)
+
+# 
+autoplot(ausbeer)
+autoplot(snaive(ausbeer))
+snaive.fit <- snaive(ausbeer)
+summary(snaive.fit)
+gghistogram(snaive.fit$residuals)
+autoplot(snaive.fit$residuals)
+
+ggAcf(snaive.fit$residuals)
+checkresiduals(snaive.fit)
+checkresiduals(rwf(ausbeer))
+
+qqnorm(snaive.fit$residuals)
+
