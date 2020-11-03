@@ -27,6 +27,11 @@ autoplot(data) + # Put everything together with legend and withot predictive int
   autolayer(rwf(data,h=14,drift=TRUE),PI=FALSE,series="Drift") +
   autolayer(meanf(data,h=14),PI=FALSE,series = "Mean")
 
+# Compare now Gaussian PI with Bootstrapping PI
+autoplot(data) + # Put everything together with legend and withot predictive intervals
+  autolayer(snaive(data,h=14,bootstrap=TRUE),PI=TRUE,series = "Naive") +
+  autolayer(snaive(data,h=14,bootstrap=FALSE),PI=TRUE,series = "Gaussian") 
+
 
 ########################################################
 # Another experiment with mock data, using pure noise
@@ -55,6 +60,13 @@ autoplot(data) + # compare them all
   autolayer(snaive(data,h=14),PI=FALSE,series="Seas. Naive") +
   autolayer(rwf(data,h=14,drift=TRUE),PI=FALSE,series="Drift") +
   autolayer(meanf(data,h=14),PI=FALSE,series = "Mean")
+
+
+# Compare now Gaussian PI with Bootstrapping PI
+autoplot(data) + # Put everything together with legend and withot predictive intervals
+  autolayer(naive(data,h=14,bootstrap=TRUE),PI=TRUE,series = "Bootstrapping") +
+  autolayer(naive(data,h=14),PI=TRUE,series = "Gaussian") 
+# Hardly distinguisable
 
 
 ### 
