@@ -32,6 +32,9 @@ autoplot(data) + # Put everything together with legend and withot predictive int
   autolayer(snaive(data,h=14,bootstrap=TRUE),PI=TRUE,series = "Naive") +
   autolayer(snaive(data,h=14,bootstrap=FALSE),PI=TRUE,series = "Gaussian") 
 
+print(data,calendar=TRUE)
+autoplot(data)
+ggsubseriesplot(data)
 
 ########################################################
 # Another experiment with mock data, using pure noise
