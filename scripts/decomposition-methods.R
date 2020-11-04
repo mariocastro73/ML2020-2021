@@ -40,6 +40,7 @@ dec <- seas(elecequip)
 checkresiduals(remainder(dec))
 dec <- seas(elecequip,x11="")
 checkresiduals(remainder(dec))
+view(dec)
 
 autoplot(dec <- stl(elecequip, s.window="periodic", robust=TRUE))
 checkresiduals(remainder(dec))
@@ -75,7 +76,7 @@ data <- ts(y,start=2009,frequency = 12)
 autoplot(data)
 
 autoplot(dec <- decompose(data))
-checkresiduals(dec$random)
+checkresiduals(remainder(dec))
 
 
 
