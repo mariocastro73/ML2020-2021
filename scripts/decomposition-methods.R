@@ -1,7 +1,4 @@
-library(tseries)
-library(forecast)
 library(smooth)
-library(forecast)
 library(fpp2)
 
 # Take a look at the class of the dataset AirPassengers (from base library datasets)
@@ -12,21 +9,26 @@ autoplot(AirPassengers)
 autoplot(decompose(AirPassengers))
 autoplot(decompose(AirPassengers,type='multiplicative'))
 dec <- decompose(AirPassengers)
-autoplot(dec$random)
-checkresiduals(dec$random)
+seasonal(dec)
+trendcycle(dec)
+remainder(dec)
+autoplot(seasonal(dec))
+autoplot(trendcycle(dec))
+autoplot(remainder(dec))
+autoplot(seasadj(dec)) +autolayer(AirPassengers)
+
+checkresiduals(remainder(dec))
 dec <- decompose(AirPassengers,type='multiplicative')
-autoplot(dec$random)
-checkresiduals(dec$random)
+autoplot(remainder(dec))
+checkresiduals(remainder(dec))
 
 AP <- log(AirPassengers)
 autoplot(AP)
 autoplot(dec <- decompose(AP))
 autoplot(decompose(AP,type='multiplicative'))
-autoplot(dec$random)
-checkresiduals(dec$random)
+autoplot(remainder(dec))
+checkresiduals(remainder(dec))
 
-
-# Looking at the random part, it's clear thet the model couldn't catch the spikes in january (among other minor ones)
 # Advanced decomposition methods
 library(seasonalview) # Monthly data
 print(elecequip)
