@@ -63,3 +63,23 @@ grid.arrange(ggar1,ggar2,ggar3,ggar4,nrow=2)
 set.seed(123)
 series <- arima.sim(list(order=c(0,0,0)),n=1000)
 grid.arrange(ggAcf(series),ggPacf(series),nrow=2)
+
+
+# Residual analysis and significance
+set.seed(123)
+ARMA11 <- arima.sim(list(ar=0.8,ma=0.8),sd=0.25,n=150)
+autoplot(ARMA11,main='ARMA11')
+ggar1 <- ggAcf(ARMA11)
+ggPar1 <- ggPacf(ARMA11)
+grid.arrange(ggar1,ggPar1,nrow=1)
+
+fit1 <- arima(ARMA11,order=c(1,0,0))
+checkresiduals(fit1)
+Box.test(fit1$residuals,lag=10, fitdf=0, type="Lj")
+fit2 <- arima(ARMA11,order=c(0,0,1))
+checkresiduals(fit2)
+Box.test(fit2$residuals)
+fit3 <- arima(ARMA11,order=c(1,0,1))
+checkresiduals(fit3)
+Box.test(fit3$residuals,lag=10, fitdf=0, type="Lj")
+summary(fit3)
