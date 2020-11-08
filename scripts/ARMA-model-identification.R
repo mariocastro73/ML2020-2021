@@ -72,7 +72,12 @@ autoplot(ARMA11,main='ARMA11')
 ggar1 <- ggAcf(ARMA11)
 ggPar1 <- ggPacf(ARMA11)
 grid.arrange(ggar1,ggPar1,nrow=1)
+######################################################################################
+# Easier way to plot
+######################################################################################
+ggtsdisplay(ARMA11)
 
+# Let's fit some models
 fit1 <- arima(ARMA11,order=c(1,0,0))
 checkresiduals(fit1)
 Box.test(fit1$residuals,lag=10, fitdf=0, type="Lj")
@@ -83,3 +88,18 @@ fit3 <- arima(ARMA11,order=c(1,0,1))
 checkresiduals(fit3)
 Box.test(fit3$residuals,lag=10, fitdf=0, type="Lj")
 summary(fit3)
+# Significance test
+library(lmtest)
+coeftest(fit3)
+
+# Unit root
+autoplot(fit3)
+
+autoplot(ARMA11,series='Data') +
+  autolayer(fitted(fit3),series="Fitted")
+# Compare with other models
+autoplot(ARMA11,series='Data') +
+  autolayer(fitted(fit1),series="Fitted")
+autoplot(ARMA11,series='Data') +
+  autolayer(fitted(fit2),series="Fitted")
+
