@@ -17,6 +17,17 @@ for(t in 1:100) {
 series <- ts(series)
 autoplot(series)
 ggAcf(series)
+# Easier alternative
+set.seed(123)
+phi1 <- -0.9
+autoplot(ar1 <- arima.sim(list(ar=phi1),n=100))
+ggAcf(ar1)
+
+# To show the exponential decay (AR(1))
+set.seed(123)
+phi1 <- 0.8
+autoplot(ar1 <- arima.sim(list(ar=phi1),n=100))
+ggAcf(ar1)
 
 # Correlation and drift
 set.seed(123)
@@ -46,5 +57,17 @@ for(t in 1:100) {
   series <- c(series,yt)
 }
 series <- ts(series)
+autoplot(series)
+ggAcf(series)
+
+# Super simple MA(2)
+set.seed(123)
+series <- arima.sim(list(ma=c(1,.8)),n=100)
+autoplot(series)
+ggAcf(series)
+
+# Super sumple ARMA11
+set.seed(123)
+series <- arima.sim(list(ar=c(-0.9),ma=c(0.9)),n=100)
 autoplot(series)
 ggAcf(series)
