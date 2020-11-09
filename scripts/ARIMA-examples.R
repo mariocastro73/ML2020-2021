@@ -15,6 +15,7 @@ checkresiduals(fit)
 autoplot(forecast(fit))
 # Compare using autoarima
 summary(auto.arima(goog200))
+summary(auto.arima(goog200,trace = TRUE))
 summary(auto.arima(diff(goog200))) # Same fit!!! Autoarima detects the "derivative"
 
 # Playing with the stock market
@@ -48,6 +49,7 @@ ggtsdisplay(d2020)
 summary(fit.aa <- auto.arima(d2019))
 autoplot(fit.aa)
 checkresiduals(fit.aa)
+# auto.arima(d2019,trace=TRUE) # Uncomment to see the trace
 # Hand-made
 ggtsdisplay(d2019)
 ggtsdisplay(diff(d2019))
@@ -56,6 +58,9 @@ fit.010 <- Arima(d2019,order=c(0,1,0))
 checkresiduals(fit.aa)
 checkresiduals(fit.111)
 checkresiduals(fit.010)
+
+summary(fit.aa)
+summary(fit.111)
 
 autoplot(fit.111)
 
