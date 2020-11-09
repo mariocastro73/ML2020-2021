@@ -79,7 +79,9 @@ grid.arrange(ggar1,ggPar1,nrow=1)
 ggtsdisplay(ARMA11)
 
 # Let's fit some models
-fit1 <- arima(ARMA11,order=c(1,0,0))
+fit1 <- arima(ARMA11,order=c(1,0,0))  # Base-R arima function
+checkresiduals(fit1)
+fit1 <- Arima(ARMA11,order=c(1,0,0)) # We will use Arima with capital "A" as it allows including "c"
 checkresiduals(fit1)
 Box.test(fit1$residuals,lag=10, fitdf=0, type="Lj")
 # Intermission: How likely are outliers if residuals are normal?
@@ -92,10 +94,10 @@ pnorm(-4) #  Probability of lower than -4
 (1-pnorm(4)+pnorm(-4))*100 # 5%
 
 # Let's fit another model
-fit2 <- arima(ARMA11,order=c(0,0,1))
+fit2 <- Arima(ARMA11,order=c(0,0,1))
 checkresiduals(fit2)
 Box.test(fit2$residuals)
-fit3 <- arima(ARMA11,order=c(1,0,1))
+fit3 <- Arima(ARMA11,order=c(1,0,1))
 checkresiduals(fit3)
 Box.test(fit3$residuals,lag=10, fitdf=0, type="Lj")
 summary(fit3)
@@ -117,8 +119,7 @@ autoplot(ARMA11,series='Data') +
 
 autoplot(forecast(fit3,h = 10))
 
-dgoog200 <- diff(goog200)
-autoplot(dgoog200)
-fit <- arima(dgoog200,order=c(1,0,0))
-checkresiduals(fit)
-autoplot(forecast(fit))
+# More on stability and stationarity: the kpss test
+library(urca)
+summary(ur.kpss(ARMA11))
+
