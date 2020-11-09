@@ -114,3 +114,11 @@ autoplot(ARMA11,series='Data') +
 autoplot(ARMA11,series='Data') +
   autolayer(fitted(fit2),series="Fitted")
 
+
+autoplot(forecast(fit3,h = 10))
+
+dgoog200 <- diff(goog200)
+autoplot(dgoog200)
+fit <- arima(dgoog200,order=c(1,0,0))
+checkresiduals(fit)
+autoplot(forecast(fit))
