@@ -1,3 +1,4 @@
+library(fpp2)
 library(gridExtra)
 
 # Can you tell the difference?
@@ -81,6 +82,16 @@ ggtsdisplay(ARMA11)
 fit1 <- arima(ARMA11,order=c(1,0,0))
 checkresiduals(fit1)
 Box.test(fit1$residuals,lag=10, fitdf=0, type="Lj")
+# Intermission: How likely are outliers if residuals are normal?
+1-pnorm(1.96) # Probability of larger than 1.96*sigma
+pnorm(-1.96) #  Probability of lower than -1.96
+(1-pnorm(1.96)+pnorm(-1.96))*100 # 5%
+
+1-pnorm(4) # Probability of larger than 4*sigma
+pnorm(-4) #  Probability of lower than -4
+(1-pnorm(4)+pnorm(-4))*100 # 5%
+
+# Let's fit another model
 fit2 <- arima(ARMA11,order=c(0,0,1))
 checkresiduals(fit2)
 Box.test(fit2$residuals)
