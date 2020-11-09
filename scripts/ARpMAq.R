@@ -74,8 +74,12 @@ ggAcf(series)
 
 # Super sumple ARIMA11 (but ARIMA will be the topic of other videos)
 set.seed(123)
-series <- arima.sim(list(order=c(1,1,1),ar=c(-0.4),ma=c(0.9)),n=100)
+series <- arima.sim(list(order=c(1,1,1),ar=c(-0.4),ma=c(0.9)),n=100) 
 autoplot(series)
 ggAcf(series)
-
+ggtsdisplay(series) # Put chart and ACFs together
+ggtsdisplay(series,plot.type = 'histogram') # Histoogram of residuals
+ggtsdisplay(series,plot.type = 'scatter') # Scatterplot of y_t vs y_{t-1}
+ggtsdisplay(series,plot.type = 'spectrum') # absolute value of correlations (look at the next plot)
+ggAcf(series,lag.max=length(series))
 
