@@ -119,6 +119,14 @@ autoplot(ARMA11,series='Data') +
 
 autoplot(forecast(fit3,h = 10))
 
+# Scenario generation
+print(fit3)
+set.seed(123)
+gridExtra::grid.arrange(autoplot(ARMA11,series="Original",ylab=""),
+  autoplot(arima.sim(list(order=c(1,0,1),ar=0.7228,ma=0.9254),sd=sd(fit3$residuals),n=150),series="Sim1",ylab=""),
+  autoplot(arima.sim(list(order=c(1,0,1),ar=0.7228,ma=0.9254),sd=sd(fit3$residuals),n=150),series="Sim2",ylab=""),
+  autoplot(arima.sim(list(order=c(1,0,1),ar=0.7228,ma=0.9254),sd=sd(fit3$residuals),n=150),series="Sim3",ylab=""))
+
 # More on stability and stationarity: the kpss test
 library(urca)
 summary(ur.kpss(ARMA11))
