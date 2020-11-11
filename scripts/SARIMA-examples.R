@@ -23,12 +23,8 @@ summary(fit.aa)
 checkresiduals(fit)
 checkresiduals(fit.aa)
 library(gridExtra)
-
 grid.arrange(autoplot(fit),autoplot(fit.aa))
 
 # Forecasting
-gridExtra::grid.arrange(autoplot(forecast(fit.aa)), autoplot(forecast(fit)))
+grid.arrange(autoplot(forecast(fit.aa)), autoplot(forecast(fit)))
 
-
-# Another examle:Corticosteroid drug sales in Australia
-ggtsdisplay(h02) # To be continued....

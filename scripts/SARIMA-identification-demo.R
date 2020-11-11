@@ -1,5 +1,5 @@
 library(forecast)
-y <- read.csv('datasets/elec-demand.csv')
+y <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/elec-demand.csv')
 y <- ts(y$x,start=1975,frequency = 12)
 
 ggtsdisplay(y) # Seasonal differencing is mandatory
