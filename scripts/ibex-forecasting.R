@@ -1,4 +1,5 @@
 library(quantmod)
+
 indf_data <- getSymbols(Symbols = "INDF.JK", src = "yahoo", from = Sys.Date() - 1953, 
                         to = Sys.Date(), auto.assign = FALSE)
 
@@ -10,3 +11,6 @@ ibex <- ibex$IBEX
 ibex <- ibex$IBEX.Adjusted
 plot(ibex)
 decompose(ibex)
+auto.arima(ibex,trace=TRUE)
+checkresiduals(Arima(ibex,order=c(0,1,0)))
+checkresiduals(Arima(ibex,order=c(0,1,2)))

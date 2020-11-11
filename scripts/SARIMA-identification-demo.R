@@ -1,3 +1,14 @@
+# 1) Plot the series and search for possible outliers. 
+# 2) Stabilize the variance by transforming the data (Box-Cox).
+# 3) Analyse the stationarity of the transformed series. 
+# 4) If the series is not stationary, then we use differencing. 
+# 5) Identify the seasonal model by analyzing the seasonal coefficients of the ACF and PACF
+# 6) Identify the regular component by exploring the ACF and PACF of the residuals of the seasonal model.
+# 7) Check the significance of the coefficients
+# 8) Analyze the residuals:
+# 9) Compare different models using AIC or SBC (M=p+q+P+Q):
+
+
 library(forecast)
 y <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/elec-demand.csv')
 y <- ts(y$x,start=1975,frequency = 12)
