@@ -27,6 +27,8 @@ ggtsdisplay(y.rdiff,lag=200) # Requires seasonal differencing
 y.rdiff.sdiff <- diff(y.rdiff, lag = 12, differences = 1) 
 ggtsdisplay(y.rdiff.sdiff) # Sweet!
 
+### Part II
+
 # Fitting
 arima.fit <- Arima(y, order=c(0,1,0),
                    seasonal = list(order=c(0,1,1),period=12),
