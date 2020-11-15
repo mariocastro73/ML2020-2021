@@ -78,13 +78,14 @@ xlag = Lag(Population,0)   # b
 xlag[is.na(xlag)]=0
 
 # Let's fit the same model as above (fit.ltf) but using the library TSA (more flexible)
-fit.TF <- TSA::arima(y,
-                     order=c(1,1,1),
-                     #seasonal = list(order=c(1,0,0),period=24),# Uncomment for seasonal data
-                     xtransf = xlag,
-                     transfer = list(c(0,0)), #List with (r,s) orders
-                     include.mean = TRUE,
-                     method="ML") # More stable than the default one
+# fit.TF <- TSA::arima(y, # To distinguish from base-R arima function or, best, use arimax
+fit.TF <- arimax(y,
+                 order=c(1,1,1),
+                 #seasonal = list(order=c(1,0,0),period=24),# Uncomment for seasonal data
+                 xtransf = xlag,
+                 transfer = list(c(0,0)), #List with (r,s) orders
+                 include.mean = TRUE,
+                 method="ML") # More stable than the default one
 
 checkresiduals(fit.ltf)
 checkresiduals(fit.TF) # Exactly same result
@@ -100,13 +101,13 @@ library(quantmod)  # to create the Lags
 xlag = Lag(Population,0)   # b
 xlag[is.na(xlag)]=0
 
-fit.TF <- TSA::arima(y,
-                     order=c(1,0,0),
-                     #seasonal = list(order=c(1,0,0),period=24),# Uncomment for seasonal data
-                     xtransf = xlag,
-                     transfer = list(c(0,8)), #List with (r,s) orders
-                     include.mean = TRUE,
-                     method="ML") # More stable than the default one
+fit.TF <- arimax(y,
+                 order=c(1,0,0),
+                 #seasonal = list(order=c(1,0,0),period=24),# Uncomment for seasonal data
+                 xtransf = xlag,
+                 transfer = list(c(0,8)), #List with (r,s) orders
+                 include.mean = TRUE,
+                 method="ML") # More stable than the default one
 coeftest(fit.TF) 
 # All the lagged coefficients are non-significant, so b=s=r=0. 
 # So we were right with the previous model, no lagged regressors are required.
@@ -119,13 +120,13 @@ coeftest(fit.TF)
 y <- insurance[,1] # Sales
 x <- insurance[,2] # TV.advert
 xlag <- Lag(x,0)
-fit.TF <- TSA::arima(y,
-                     order=c(1,0,0), # ARIMA noise p=1, d=q=0
-                     #seasonal = list(order=c(1,0,0),period=24), # Uncomment for seasonal data
-                     xtransf = xlag, # Lagged predictor (not in this case, b=0)
-                     transfer = list(c(0,8)), # List with (r,s) orders
-                     include.mean = TRUE, # The coefficient "c" of the model
-                     method="ML")
+fit.TF <- arimax(y,
+                 order=c(1,0,0), # ARIMA noise p=1, d=q=0
+                 #seasonal = list(order=c(1,0,0),period=24), # Uncomment for seasonal data
+                 xtransf = xlag, # Lagged predictor (not in this case, b=0)
+                 transfer = list(c(0,8)), # List with (r,s) orders
+                 include.mean = TRUE, # The coefficient "c" of the model
+                 method="ML")
 
 summary(fit.TF) # summary of training errors and estimated coefficients
 coeftest(fit.TF) # statistical significance of estimated coefficients
@@ -139,18 +140,18 @@ ggtsdisplay(fitted(fit.TF),lag=50)
 # a seasonal contribution, 12 month). First, we'll fit the new model and then check those again.
 # Finally, looking at ACF, it seems that no differencing is required.
 
-fit.TF2 <- TSA::arima(y,
-                     order=c(0,0,1), # ARIMA noise q=1, d=0 (no differencing required)
-                     xtransf = xlag, # Lagged predictor (not in this case, b=0, as we discussed above)
-                     transfer = list(c(0,0)), # List with (r,s) orders. We determined that s=0 and r=0
-                     include.mean = TRUE, # The coefficient "c" of the model
-                     method="ML")
-fit.TF3 <- TSA::arima(y,
-                     order=c(1,0,0), # ARIMA noise p=1, d=0 (no differencing required)
-                     xtransf = xlag, # Lagged predictor (not in this case, b=0, as we discussed above)
-                     transfer = list(c(0,0)), # List with (r,s) orders. We determined that s=1 and r=0
-                     include.mean = TRUE, # The coefficient "c" of the model
-                     method="ML")
+fit.TF2 <- arimax(y,
+                  order=c(0,0,1), # ARIMA noise q=1, d=0 (no differencing required)
+                  xtransf = xlag, # Lagged predictor (not in this case, b=0, as we discussed above)
+                  transfer = list(c(0,0)), # List with (r,s) orders. We determined that s=0 and r=0
+                  include.mean = TRUE, # The coefficient "c" of the model
+                  method="ML")
+fit.TF3 <- arimax(y,
+                  order=c(1,0,0), # ARIMA noise p=1, d=0 (no differencing required)
+                  xtransf = xlag, # Lagged predictor (not in this case, b=0, as we discussed above)
+                  transfer = list(c(0,0)), # List with (r,s) orders. We determined that s=1 and r=0
+                  include.mean = TRUE, # The coefficient "c" of the model
+                  method="ML")
 coeftest(fit.TF2) # statistical significance of estimated coefficients
 coeftest(fit.TF3) # statistical significance of estimated coefficients
 summary(fit.TF2)
