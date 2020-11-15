@@ -149,7 +149,7 @@ fit.TF2 <- arimax(y,
 fit.TF3 <- arimax(y,
                   order=c(1,0,0), # ARIMA noise p=1, d=0 (no differencing required)
                   xtransf = xlag, # Lagged predictor (not in this case, b=0, as we discussed above)
-                  transfer = list(c(0,0)), # List with (r,s) orders. We determined that s=1 and r=0
+                  transfer = list(c(0,0)), # List with (r,s) orders. We determined that s=0 and r=0
                   include.mean = TRUE, # The coefficient "c" of the model
                   method="ML")
 coeftest(fit.TF2) # statistical significance of estimated coefficients
@@ -158,7 +158,7 @@ summary(fit.TF2)
 summary(fit.TF3) # Better fit in terms of RMSE, MAE, ...
 # The first coefficient is significant, so b=0.
 # There is no pattern of decay, so r=0.
-# Only 1 significant coefficient (T1-MA0) so s=1.
+# Only 1 significant coefficient (T1-MA0) so s=0 
 autoplot(fit.TF3)
 ggtsdisplay(fitted(fit.TF3),lag=50) 
 
@@ -180,4 +180,4 @@ autoplot(y, series = "Real")+
   autolayer(ts(fit.lm$fitted.values,frequency=12,start=c(2002,1)), series = "LM")  # Fits systematically wors
 
 # You can try to add P=1 to account for the apparent seasonal autoregressive component.
-
+forecast(fit.TF3)
