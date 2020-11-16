@@ -9,11 +9,14 @@ economy <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021
 ggplot(economy,aes(x=Year,y=Population)) + geom_point() + 
   geom_smooth(method='gam',formula=y~splines::ns(x,2))
 
-ggplot(economy,aes(x=Population,y=log10(GDP))) + geom_point() + 
-  geom_smooth(method='gam',formula=y~splines::ns(x,2)) +xlab("Population") +ylab("log10(GDP)") 
-
 ggplot(economy,aes(x=Year,y=log10(GDP))) + geom_point() + 
   geom_smooth(method='gam',formula=y~splines::ns(x,2))
+
+ggplot(economy,aes(x=Population,y=log10(GDP))) + geom_point() + 
+  geom_smooth(method='gam',formula=y~splines::ns(x,2)) +
+   xlab("Population") +ylab("log10(GDP)") 
+
+
 
 
 
@@ -28,7 +31,10 @@ ggtsdisplay(fit.lm$residuals) # Clearly needs differencing
 ggtsdisplay(diff(fit.lm$residuals)) # It looks like MA(1) and maybe AR with small phi1.
 # Let's try directly auto arima
 fit.res.aa <- auto.arima(fit.lm$residuals)
-coeftest(fit.res.aa) # Both significant, si we'll keep that noise term
+coeftest(fit.res.aa) # Both significant, so we'll keep that noise term
+checkresiduals(Arima(fit.lm$residuals,order=c(1,0,1)))
+ggtsdisplay(Arima(fit.lm$residuals,order=c(1,0,1))$residuals)
+
 
 fit.lm2 <- with(economy2000,Arima(log10(GDP),xreg=Population,order=c(0,0,0)))
 summary(fit.lm)
@@ -39,6 +45,7 @@ library(lmtest)
 coeftest(fit.lm)
 coeftest(fit.lm2)
 coeftest(fit.ltf)
+
 checkresiduals(fit.lm)
 checkresiduals(fit.lm2)
 checkresiduals(fit.ltf)
@@ -52,15 +59,17 @@ ggplot(economy2000,aes(x=lm,y=log10(GDP))) + geom_point() +
 ggplot(economy2000,aes(x=ltf,y=log10(GDP))) + geom_point() +  
   geom_smooth(method='lm',formula=y~x) # Much better!
 
-gridExtra::grid.arrange(autoplot(forecast(fit.lm2,xreg=economy$Population[41:51])),
-                        autoplot(forecast(fit.ltf,xreg=economy$Population[41:51])))
 
 gridExtra::grid.arrange(autoplot(forecast(fit.lm2,xreg=economy$Population[-(1:40)])) +
                           autolayer(ts(log10(economy$GDP)),series="Real data"),
                         autoplot(forecast(fit.ltf,xreg=economy$Population[-(1:40)])) +
                           autolayer(ts(log10(economy$GDP)),series="Real data"))
+
 # So it captures better the ups and downs. Somehow imputes the heaps to correlations and not to 
 # a sustained trend. Cool!
+
+gridExtra::grid.arrange(autoplot(forecast(fit.lm2,xreg=economy$Population[41:51])),
+                        autoplot(forecast(fit.ltf,xreg=economy$Population[41:51])))
 
 
 ######################################################################################
