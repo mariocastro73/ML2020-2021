@@ -69,7 +69,7 @@ sim.LTF.ARIMA <- function(x,omega=1,delta=NULL,b=0,p=NULL,d=0,q=NULL){
            sides = 2)
 
   
-    noise <- arima.sim(model = list(order=c(length(p),d,length(q))),n=length(x))
+  noise <- arima.sim(model = list(order=c(length(p),d,length(q)),ar=p,ma=q),n=length(x))
   y <- as.numeric(xfilt+noise)
   y[is.na(y)] <- 0
   return(ts(y))
