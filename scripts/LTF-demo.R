@@ -2,10 +2,10 @@ library(fpp2)
 library(gam)
 library(TSA)
 library(lmtest)  #contains coeftest function
-
+library(forecast)
 
 ######################################################################################
-library(forecast)
+
 
 economy <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/spanish-economy.csv')
 # economy <- read.csv('datasets/spanish-economy.csv')
