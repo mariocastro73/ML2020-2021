@@ -2,13 +2,10 @@ library(fpp2)
 library(gam)
 library(TSA)
 library(lmtest)  #contains coeftest function
-library(forecast)
 
 ######################################################################################
-
-
 economy <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/spanish-economy.csv')
-# economy <- read.csv('datasets/spanish-economy.csv')
+
 ggplot(economy,aes(x=Year,y=Population)) + geom_point() + 
   geom_smooth(method='gam',formula=y~splines::ns(x,2))
 
@@ -111,73 +108,3 @@ fit.TF <- arimax(y,
 coeftest(fit.TF) 
 # All the lagged coefficients are non-significant, so b=s=r=0. 
 # So we were right with the previous model, no lagged regressors are required.
-
-######################################################################################
-### Now let's play with another dataset 
-######################################################################################
-
-?insurance
-y <- insurance[,1] # Sales
-x <- insurance[,2] # TV.advert
-xlag <- Lag(x,0)
-fit.TF <- arimax(y,
-                 order=c(1,0,0), # ARIMA noise p=1, d=q=0
-                 #seasonal = list(order=c(1,0,0),period=24), # Uncomment for seasonal data
-                 xtransf = xlag, # Lagged predictor (not in this case, b=0)
-                 transfer = list(c(0,8)), # List with (r,s) orders
-                 include.mean = TRUE, # The coefficient "c" of the model
-                 method="ML")
-
-summary(fit.TF) # summary of training errors and estimated coefficients
-coeftest(fit.TF) # statistical significance of estimated coefficients
-barplot(coef(fit.TF)[-(1:2)])
-# The first coefficient is significant, so b=0.
-# There is no pattern of decay, so r=0.
-# 0 significant coefficient (the index of T1-MA*) so s=0.
-autoplot(fit.TF)
-ggtsdisplay(fitted(fit.TF),lag=50) 
-# Clearly AR(1) or MA(1) and something weird with lags=10 and 11 (might be related to the 
-# a seasonal contribution, 12 month). First, we'll fit the new model and then check those again.
-# Finally, looking at ACF, it seems that no differencing is required.
-
-fit.TF2 <- arimax(y,
-                  order=c(0,0,1), # ARIMA noise q=1, d=0 (no differencing required)
-                  xtransf = xlag, # Lagged predictor (not in this case, b=0, as we discussed above)
-                  transfer = list(c(0,0)), # List with (r,s) orders. We determined that s=0 and r=0
-                  include.mean = TRUE, # The coefficient "c" of the model
-                  method="ML")
-fit.TF3 <- arimax(y,
-                  order=c(1,0,0), # ARIMA noise p=1, d=0 (no differencing required)
-                  xtransf = xlag, # Lagged predictor (not in this case, b=0, as we discussed above)
-                  transfer = list(c(0,0)), # List with (r,s) orders. We determined that s=0 and r=0
-                  include.mean = TRUE, # The coefficient "c" of the model
-                  method="ML")
-coeftest(fit.TF2) # statistical significance of estimated coefficients
-coeftest(fit.TF3) # statistical significance of estimated coefficients
-summary(fit.TF2)
-summary(fit.TF3) # Better fit in terms of RMSE, MAE, ...
-# The first coefficient is significant, so b=0.
-# There is no pattern of decay, so r=0.
-# Only 1 significant coefficient (T1-MA0) so s=0 
-autoplot(fit.TF3)
-ggtsdisplay(fitted(fit.TF3),lag=50) 
-
-df <- data.frame(ads=x,sales=y,fit=fitted(fit.TF3))
-ggplot(df,aes(x=fit,y=sales)) + geom_point() +
-  geom_smooth(method='lm') # Pretty decent fit
-
-
-# Compare with a basic linear regression
-AIC(fit.TF3)
-AIC((fit.lm <- lm(y~x)))
-ggtsdisplay(residuals(fit.TF3))
-ggtsdisplay(residuals(fit.lm))
-
-
-# Check fitted
-autoplot(y, series = "Real")+
-  autolayer(fitted(fit.TF3), series = "LTF") +
-  autolayer(ts(fit.lm$fitted.values,frequency=12,start=c(2002,1)), series = "LM")  # Fits systematically wors
-
-# You can try to add P=1 to account for the apparent seasonal autoregressive component.
-forecast(fit.TF3)
