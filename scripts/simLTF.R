@@ -5,6 +5,7 @@
 library(fpp2)
 library(Hmisc)
 library(quantmod)
+library(TSA)
 
 simLTF <- function(x,omega=1,delta=NULL,b=0){
   #x <- input time series
