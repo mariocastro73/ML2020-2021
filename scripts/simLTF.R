@@ -15,9 +15,7 @@ simLTF <- function(x,omega=1,delta=NULL,b=0){
   x <- Lag(x,b)
   x[is.na(x)]<-0
   
-  # One regressor variable
   # AR regression terms
-  #indexcoef <- grep("-AR", coefnames)
   if (!is.null(delta)) {
     xfilt <-
       filter(x,
