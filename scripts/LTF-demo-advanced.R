@@ -7,7 +7,7 @@ library(lmtest)  #contains coeftest function
 
 
 ## Load dataset -------------------------------------------------------------------------------------------------------
-fdata <- read.table("LTF-data.dat",header = TRUE, sep = "")
+fdata <- read.table("https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/LTF-data.dat",header = TRUE, sep = "")
 ggplot(fdata,aes(x=x,y=y)) + geom_point() # OMG!
 # Convert to time series object
 x <- ts(fdata$x)
