@@ -69,3 +69,7 @@ autoplot(y, series = "Real")+
 
 ggplot(data.frame(X=fitted(TF.fit2),Y=y),aes(x=X,y=Y)) + geom_point() + 
    geom_smooth(method='lm',formula=y~x)
+
+library(polynom)
+print(delta <- polynomial(c(1,-0.6809,-0.2496)))
+print(omega <- polynomial(-0.32))
