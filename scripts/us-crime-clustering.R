@@ -1,17 +1,17 @@
+library(GGally)
+library(factoextra)
+library(cluster)
+
 data("USArrests")      # Loading the data set
-df <- scale(USArrests) # Scaling the data
-df <- as.data.frame(df) # Scaling the data
+ggpairs(USArrests)
+df <- as.data.frame(scale(USArrests)) # Scaling the data
 
 # View the firt 3 rows of the data
 head(df, n = 3)
 
-library(factoextra)
-library(cluster)
 
 # Compute k-means with k = 4
 set.seed(123)
-
-pairs.panels(df)
 
 km <- kmeans(df,2,nstart=25)
 km$tot.withinss
@@ -49,14 +49,10 @@ library(NbClust)
 nb.fit <- NbClust(df,index='all',method = 'complete',max.nc = 10)
 fviz_nbclust(nb.fit)
 
-pairs.panels(df,col=km$cluster)
 df$col <- as.factor(km$cluster)
-library(gridExtra)
-str(df)
-grid.arrange(ggplot(df,aes(x=Murder,y=Assault,col=col)) + geom_point(),
-ggplot(df,aes(x=Murder,y=UrbanPop,col=col)) + geom_point(),
-ggplot(df,aes(x=Murder,y=Rape,col=col)) + geom_point(),
-ggplot(df,aes(x=Assault,y=Rape,col=col)) + geom_point())
-library(GGally)
-
 ggpairs(df,aes(col=col)) 
+df
+?kmeans
+
+km$cluster <- as.factor(ifelse(km$cluster==1,"High crime","Low crime"))
+fviz_cluster(km,data=df[,-5],col=as.factor(ifelse(1,"High crime","Low crime")))
