@@ -2,57 +2,56 @@ library(GGally)
 library(factoextra)
 library(cluster)
 
-data("USArrests")      # Loading the data set
-ggpairs(USArrests)
-df <- as.data.frame(scale(USArrests)) # Scaling the data
-
-# View the firt 3 rows of the data
-head(df, n = 3)
-
-
-# Compute k-means with k = 4
+data("USArrests")
+head(USArrests)
+summary(USArrests)
+df <-  data.frame(scale(USArrests))
+summary(df)
 set.seed(123)
+km <- kmeans(df,centers=5,nstart=25,trace = TRUE)
+summary(km)
+km$cluster
+km$tot.withinss
+sil <- silhouette(km$cluster,dist=dist(df))
+sil[,3]
+df[8,]
+fviz_silhouette(sil)
 
-km <- kmeans(df,2,nstart=25)
+km <- kmeans(df,centers=2,nstart=25,trace = TRUE)
+summary(km)
+km$cluster
 km$tot.withinss
 sil <- silhouette(km$cluster,dist=dist(df))
 fviz_silhouette(sil)
-
-km <- kmeans(df,5,nstart=25)
-km$tot.withinss
-sil <- silhouette(km$cluster,dist=dist(df))
-fviz_silhouette(sil)
-
 
 elbow <- c()
 mean.sil <- c()
-for(k in 2:10) {
-km <- kmeans(df, k, nstart = 25)
-sil <- silhouette(km$cluster,dist=dist(df))
 
-elbow <- c(elbow,km$tot.withinss)
-mean.sil<- c(mean.sil,mean(sil[,3]))
+for(k in 2:10) {
+  km <- kmeans(df,centers=k,nstart=25)
+  sil <- silhouette(km$cluster,dist=dist(df))
+  elbow <- c(elbow,km$tot.withinss)
+  mean.sil <- c(mean.sil,mean(sil[,3]))
 }
 
-plot(2:10,elbow/max(elbow),type='b')
-points(2:10,mean.sil/max(mean.sil),type='b',col=2)
-# k=2 from Silhouette and k=4 from elbow
-
-km <- kmeans(df,4,nstart=25)
-sil <- silhouette(km$cluster,dist=dist(df))
-fviz_silhouette(sil)
-km <- kmeans(df,2,nstart=25)
-sil <- silhouette(km$cluster,dist=dist(df))
-fviz_silhouette(sil)
+plot(2:10,elbow,type='b',xlab='k') # k=4
+plot(2:10,mean.sil,type='b',xlab='k') # k=2
 
 library(NbClust)
-nb.fit <- NbClust(df,index='all',method = 'complete',max.nc = 10)
+nb.fit <- NbClust(df,index='all',method='complete',min.nc = 2,max.nc = 10)
 fviz_nbclust(nb.fit)
+set.seed(1234)
+km <- kmeans(df,centers=2,nstart=25,trace = TRUE)
 
-df$col <- as.factor(km$cluster)
-ggpairs(df,aes(col=col)) 
-df
-?kmeans
+df$Cluster <- as.factor(km$cluster)
+ggpairs(df,aes(col=Cluster),upper=list(continuous=wrap('cor',family='sans')))
+fviz_cluster(km,data=df[,-5])
+# Add some labels
+#km$cluster <- as.factor(ifelse(km$cluster==1,"High crime","Low crime"))
+#fviz_cluster(km,data=df[,-5],col=as.factor(ifelse(1,"High crime","Low crime")))
 
-km$cluster <- as.factor(ifelse(km$cluster==1,"High crime","Low crime"))
-fviz_cluster(km,data=df[,-5],col=as.factor(ifelse(1,"High crime","Low crime")))
+set.seed(1234)
+km <- kmeans(df,centers=4,nstart=25,trace = TRUE)
+df$Cluster <- as.factor(km$cluster)
+ggpairs(df,aes(col=Cluster),upper=list(continuous=wrap('cor',family='sans')))
+fviz_cluster(km,data=df[,-5])
