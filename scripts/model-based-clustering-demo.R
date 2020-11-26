@@ -51,7 +51,30 @@ ggplot(data,aes(x=x,y=y,col=as.factor(cl))) + geom_point()
 fviz_dend(as.dendrogram(hcTree),show_labels=FALSE,k=3)
 
 
-###
+
+### Cool example
+data(banknote)
+ggpairs(banknote,aes(col=Status),upper=list(continuous=wrap('cor',family='sans')))
+mc <- Mclust(banknote[,-1])
+summary(mc)
+plot(mc)
+fviz_mclust_bic(mc)
+fviz_mclust(mc)
+fviz_mclust(mc,'uncertainty')
+table(banknote$Status,fit.mc$classification)
+fviz_cluster(mc,banknote[,-1])
+
+# Repeat with G=2
+mc <- Mclust(banknote[,-1],G=2)
+summary(mc)
+fviz_mclust_bic(mc)
+fviz_mclust(mc)
+fviz_mclust(mc,'uncertainty')
+table(banknote$Status,fit.mc$classification)
+fviz_cluster(mc,banknote[,-1])
+
+
+### A tough one
 cereal <- read.csv('https://raw.githubusercontent.com/mariocastro73/ML2020-2021/master/datasets/cereal.csv')
 data <- as.data.frame(scale(cereal[,-c(1:3,12:16)]))
 # plot(densityMclust(data,what='density',type='perspective'))
@@ -64,13 +87,3 @@ mc <- Mclust(data,G=4)
 summary(mc)
 fviz_mclust(mc)
 
-
-### Cool example
-data(banknote)
-ggpairs(banknote,aes(col=Status),upper=list(continuous=wrap('cor',family='sans')))
-mc <- Mclust(banknote[,-1])
-summary(mc)
-fviz_mclust_bic(mc)
-fviz_mclust(mc)
-fviz_mclust(mc,'uncertainty')
-table(banknote$Status,fit.mc$classification)
