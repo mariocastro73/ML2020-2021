@@ -32,7 +32,7 @@ fviz_contrib(res.pca,choice = 'var',top=10,axes = 2)
 
 # Project data on new variables
 fviz_pca_ind(res.pca)
-fviz_pca_ind(res.pca,repel = TRUE)
+fviz_pca_ind(res.pca,repel = TRUE) # Slow because "repeling" takes time
 fviz_pca_ind(res.pca,col.ind=data$Region,label='point')
 fviz_pca_ind(res.pca,col.ind=data$Climate,label='point')
 
