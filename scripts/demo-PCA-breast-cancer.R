@@ -7,7 +7,7 @@ summary(data)
 
 #Redundancy!
 library(corrplot)
-corrplot(cor(data),diag=FALSE)
+corrplot(cor(data),diag=FALSE,tl.pos = 'n')
 
 library(FactoMineR)
 library(factoextra)
