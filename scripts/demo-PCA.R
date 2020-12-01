@@ -2,15 +2,15 @@ library(factoextra)
 library(FactoMineR)
 
 decathlon2
+str(decathlon2)
+summary(decathlon2)
 
 data <- decathlon2[1:23, 1:10]
-head(decathlon2.active[, 1:6], 4)
+str(data)
+summary(data)
 
 res.pca <- PCA(data, graph = FALSE)
 print(res.pca)
-# rownames(data) <- data$Country
-str(data)
-summary(data)
 # Compute PCA
 res.pca <- PCA(data)
 # Inspect eigenvalues
