@@ -118,38 +118,6 @@ fviz_pca_ind(res.pca, col.ind = "cos2",
 fviz_pca_biplot(res.pca)
 
 
-fviz_pca_ind(res.pca,
-             geom.ind = "point", # show points only (nbut not "text")
-             col.ind = res.pca$ind$cos2, # color by groups
-             addEllipses = TRUE) # Concentration ellipses
-
-fviz_pca_biplot(res.pca,
-                col.ind = data$Subsaharan,
-                addEllipses = TRUE, label = "var",
-                col.var = "black", repel = TRUE)
-
-
-# Quality of the representation
-res.pca$var$cos2
-corrplot(var$cos2, is.corr=FALSE)
-
-# Color by cos2 values: quality on the factor map
-fviz_pca_var(res.pca, col.var = "cos2",
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel =TRUE)
-fviz_pca_biplot(res.pca, col.var = "cos2",
-                gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-                repel =TRUE)
-fviz_pca_ind(res.pca, col.ind = "cos2",
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE # Avoid text overlapping (slow if many points)
-)
-
-
-
-# Plotting supplementary individuals
-fviz_pca_ind(res.pca, col.ind.sup = "blue", repel = TRUE)
-
 # Facto shiny
 library(Factoshiny)
 res.shiny <- PCAshiny(data)
