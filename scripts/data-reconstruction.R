@@ -9,6 +9,7 @@ fviz_screeplot(res.pca)
 res.pca <- PCA(data,ncp = 2)
 res.pca$ind$coord
 
+corrplot(res.pca$var$coord)
 # Reconstructing 1 day
 plot(as.numeric(data[,18]),type='l') # 6pm traffic
 orig <- as.numeric(data[,18])
