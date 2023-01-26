@@ -1,6 +1,7 @@
 # Machine Learning for Engineers
-In this repository you can find libraries, datasets and R scripts for the course "Machine Learning" taught at **Universidad Pontificia Comillas**
+In this repository you can find libraries, datasets and R scripts for the course "Machine Learning" taught at [**Universidad Pontificia Comillas**](https://www.comillas.edu)
 
+# Videos
 These are the video lectures (playlists) related to this course from my youtube channel ![https://www.youtube.com/@MarioCastroPonce](https://www.youtube.com/@MarioCastroPonce)
 - [Introduction to R](https://www.youtube.com/playlist?list=PLvO5R9cL9m4QNNpSMQbaZPTgzDmiAnVHU)
 - [Classification](https://www.youtube.com/playlist?list=PLvO5R9cL9m4TrnmBYSToIDL0keyAVO64X)
@@ -13,3 +14,5 @@ These are the video lectures (playlists) related to this course from my youtube 
 - [Clustering](https://www.youtube.com/playlist?list=PLvO5R9cL9m4SN4MX83ulRS-LKvErFZ8H6)
 - [Dimensionality reduction](https://www.youtube.com/playlist?list=PLvO5R9cL9m4QacbtNGZ8xuGLASF3WQ3-1)
 
+# Me
+[About me](https://www.iit.comillas.edu/people/marioc)
