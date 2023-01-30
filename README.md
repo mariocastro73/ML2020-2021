@@ -2,7 +2,7 @@
 In this repository you can find libraries, datasets and R scripts for the course "Machine Learning" taught at [**Universidad Pontificia Comillas**](https://www.comillas.edu)
 
 # Videos
-These are the video lectures (playlists) related to this course from my youtube channel ![https://www.youtube.com/@MarioCastroPonce](https://www.youtube.com/@MarioCastroPonce)
+These are the video lectures (playlists) related to this course from my youtube channel [https://www.youtube.com/@MarioCastroPonce](https://www.youtube.com/@MarioCastroPonce)
 - [Introduction to R](https://www.youtube.com/playlist?list=PLvO5R9cL9m4QNNpSMQbaZPTgzDmiAnVHU)
 - [Classification](https://www.youtube.com/playlist?list=PLvO5R9cL9m4TrnmBYSToIDL0keyAVO64X)
 - [Neural networks](https://www.youtube.com/playlist?list=PLvO5R9cL9m4QGvETpMM18V7CZ-PiMbK6s)
